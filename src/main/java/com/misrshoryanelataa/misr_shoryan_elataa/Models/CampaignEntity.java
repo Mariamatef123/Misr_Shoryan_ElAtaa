@@ -1,7 +1,5 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Models;
-
 import java.sql.Date;
-
 import org.springframework.format.annotation.DateTimeFormat;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -16,7 +14,6 @@ public class CampaignEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
 
-
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     Date date;
 
@@ -27,6 +24,7 @@ public class CampaignEntity {
     String location;
     String description;
     boolean isActivated;
+
     public void setPr(PREntity pr) {
         this.pr = pr;
     }
@@ -77,8 +75,7 @@ public class CampaignEntity {
         return description;
     }
 
-    public CampaignEntity() {}
-    
-
+    public CampaignEntity() {
+    }
 
 }

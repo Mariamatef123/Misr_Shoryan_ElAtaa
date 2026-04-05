@@ -1,12 +1,8 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Models;
-
 import java.sql.Time;
 import java.util.Date;
-
 import org.springframework.format.annotation.DateTimeFormat;
-
 import com.misrshoryanelataa.misr_shoryan_elataa.Enums.InterviewStatus;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 @Entity
@@ -27,13 +24,9 @@ public class InterviewSlotEntity {
     @JoinColumn(name = "volunteer_id", unique = true)
     private VolunteerEntity volunteer;
 
-    @ManyToOne
-    @JoinColumn(name = "hr_id")
-    private HREntity hr;
-
-    @ManyToOne
-    @JoinColumn(name = "interview_id")
-    private InterviewEntity interview;
+   @ManyToOne
+@JoinColumn(name = "interview_id")
+private InterviewEntity interview;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date slotDate;
@@ -44,13 +37,6 @@ public class InterviewSlotEntity {
     @Enumerated(EnumType.STRING)
     private InterviewStatus status;
 
-    public void setHr(HREntity hr) {
-        this.hr = hr;
-    }
-
-    public HREntity getHr() {
-        return hr;
-    }
 
     public void setStatus(InterviewStatus status) {
         this.status = status;
@@ -98,6 +84,14 @@ public class InterviewSlotEntity {
 
     public int getInterviewSlotID() {
         return id;
+    }
+
+    public void setInterview(InterviewEntity interview) {
+        this.interview = interview;
+    }
+
+    public InterviewEntity getInterview() {
+        return interview;
     }
 
     public InterviewSlotEntity() {

@@ -10,9 +10,12 @@ public class InterviewEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "interview", cascade = CascadeType.ALL)
-    private List<InterviewSlotEntity> interviewSlots;
+@OneToMany(mappedBy = "interview", cascade = CascadeType.ALL)
+private List<InterviewSlotEntity> interviewSlots;
 
+    @ManyToOne
+    @JoinColumn(name = "hr_id")
+    private HREntity hr;
 
     public Long getId() {
         return id;
@@ -28,6 +31,14 @@ public class InterviewEntity {
 
     public void setInterviewSlots(List<InterviewSlotEntity> interviewSlots) {
         this.interviewSlots = interviewSlots;
+    }
+
+    public void setHr(HREntity hr) {
+        this.hr = hr;
+    }
+
+    public HREntity getHr() {
+        return hr;
     }
 
     public InterviewEntity() {

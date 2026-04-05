@@ -17,30 +17,33 @@ import com.misrshoryanelataa.misr_shoryan_elataa.Services.PRService;
 
 @RestController
 public class PRController {
- 
+
     @Autowired
     private PRService PRService;
 
     @PostMapping("/campaigns")
     public PREntity createCampaign(@RequestBody CampaignEntity campaign) {
         return PRService.createCampaign(campaign);
-        }
-    
-        @GetMapping("/campaigns")
-        public List<CampaignEntity> getAllCampaigns() {
-            return PRService.getAllCampaigns();
-        }
+    }
 
-        @DeleteMapping("/campaigns/{id}")
-        public void deleteCampaign(@PathVariable int id) {
-            PRService.deleteCampaign(id);
-        }
+    @GetMapping("/campaigns")
+    public List<CampaignEntity> getAllCampaigns() {
+        return PRService.getAllCampaigns();
+    }
 
-        @PutMapping("/campaigns/{id}")
-        public void updateCampaign(@PathVariable int id, @RequestBody CampaignEntity campaign) {
-            PRService.updateCampaign(id, campaign);
-        }
+    @DeleteMapping("/campaigns/{id}")
+    public void deleteCampaign(@PathVariable int id) {
+        PRService.deleteCampaign(id);
+    }
 
+    @PutMapping("/campaigns/{id}")
+    public void updateCampaign(@PathVariable int id, @RequestBody CampaignEntity campaign) {
+        PRService.updateCampaign(id, campaign);
+    }
 
+    @PostMapping("send-email-to-users")
+    public void sendEmailToUsers(@RequestBody CampaignEntity campaign) {
+        PRService.sendEmailToUsers(campaign);
+    }
 
 }
