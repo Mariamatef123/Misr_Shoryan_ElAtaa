@@ -1,7 +1,15 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Models;
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Collection;
 import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.misrshoryanelataa.misr_shoryan_elataa.Enums.InterviewStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,23 +27,30 @@ public class InterviewSlotEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    
+    @JsonManagedReference
     @OneToOne
     @JoinColumn(name = "volunteer_id", unique = true)
     private VolunteerEntity volunteer;
 
-   @ManyToOne
+@JsonBackReference
+@ManyToOne
 @JoinColumn(name = "interview_id")
 private InterviewEntity interview;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date slotDate;
+@JsonProperty("interviewId")
+public int getInterviewId() {
+    return interview != null ? interview.getId() : null;
 
-    @DateTimeFormat(pattern = "HH:mm")
-    private Time slotTime;
+}
+@JsonFormat(pattern = "HH:mm")
+private LocalTime slotTime;
 
-    @Enumerated(EnumType.STRING)
-    private InterviewStatus status;
+@JsonFormat(pattern = "yyyy-MM-dd")
+private LocalDate slotDate;
+
+@Enumerated(EnumType.STRING)
+private InterviewStatus status=InterviewStatus.AVAILABLE;
 
 
     public void setStatus(InterviewStatus status) {
@@ -50,11 +65,11 @@ private InterviewEntity interview;
         this.id = slotID;
     }
 
-    public void setSlotDate(Date slotDate) {
+    public void setSlotDate(LocalDate slotDate) {
         this.slotDate = slotDate;
     }
 
-    public void setSlotTime(Time slotTime) {
+    public void setSlotTime(LocalTime slotTime) {
         this.slotTime = slotTime;
     }
 
@@ -62,11 +77,11 @@ private InterviewEntity interview;
         return id;
     }
 
-    public Date getSlotDate() {
+    public LocalDate getSlotDate() {
         return slotDate;
     }
 
-    public Time getSlotTime() {
+    public LocalTime getSlotTime() {
         return slotTime;
     }
 
@@ -95,5 +110,10 @@ private InterviewEntity interview;
     }
 
     public InterviewSlotEntity() {
+    }
+
+    public static Collection<InterviewSlotEntity> findAll() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
     }
 }

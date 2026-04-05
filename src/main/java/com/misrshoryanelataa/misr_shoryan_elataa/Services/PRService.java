@@ -26,12 +26,13 @@ public class PRService {
     @Autowired
     private JavaMailSender mailSender;
 
-    public PREntity createCampaign(CampaignEntity campaign) {
-        PREntity prEntity = new PREntity();
-        prEntity.setCampaign(campaign);
+    public PREntity createCampaign(CampaignEntity campaign,int prId) {
+       PREntity pr= prRepo.findById(prId).orElseThrow(() -> new RuntimeException("PR not found"));;
+        pr.setCampaign(campaign);
+        campaign.setPr(pr);
         campaignRepo.save(campaign);
         sendEmailToUsers(campaign);
-        return prRepo.save(prEntity);
+        return prRepo.save(pr);
 
     }
 
@@ -70,42 +71,39 @@ public class PRService {
                 });
     }
 
-    public void sendEmailToUsers(CampaignEntity campaign) {
-        prRepo.findAll().stream()
-                .flatMap(pr -> pr.getCampaigns().stream())
-                .filter(c -> c.getId() == campaign.getId())
-                .findFirst()
-                .ifPresent(existingCampaign -> {
-                    existingCampaign.setDate(campaign.getDate());
-                    existingCampaign.setDescription(campaign.getDescription());
-                    existingCampaign.setLocation(campaign.getLocation());
-                    existingCampaign.setIsActivated(campaign.getIsActivated());
+public void sendEmailToUsers(CampaignEntity campaign) {
+    prRepo.findAll().stream()
+            .flatMap(pr -> pr.getCampaigns().stream())
+            .filter(c -> c.getId() == campaign.getId())
+            .findFirst()
+            .ifPresent(existingCampaign -> {
+                existingCampaign.setDate(campaign.getDate());
+                existingCampaign.setDescription(campaign.getDescription());
+                existingCampaign.setLocation(campaign.getLocation());
+                existingCampaign.setIsActivated(campaign.getIsActivated());
+                campaignRepo.save(existingCampaign);
+                prRepo.save(existingCampaign.getPr());
+            });
 
-                    campaignRepo.save(existingCampaign);
-                    prRepo.save(existingCampaign.getPr());
-                });
-        userRepo.findAll().forEach(user -> {
+    userRepo.findAll().forEach(user -> {
+        if (user.getEmail() == null || user.getEmail().isBlank()) return;
 
-            String toEmail = user.getEmail();
-            String fromEmail = "misrshoryanelataa@gmail.com";
-            String subject = "Update on Campaigns";
+        String body = "Dear " + user.getName() + ",\n\n" +
+                "We would like to inform you about the latest updates on our campaigns.\n\n" +
+                "Description: " + campaign.getDescription() + "\n" +
+                "Location: " + campaign.getLocation() + "\n" +
+                "Date: " + campaign.getDate() + "\n\n" +
+                "Please visit our website for more details.\n\n" +
+                "Best regards,\n" +
+                "Misr Shoryan Elataa Team";
 
-            String body = "Dear " + user.getName() + ",\n\n" +
-                    "We would like to inform you about the latest updates on our campaigns.\n\n" +
-                    "Description: " + campaign.getDescription() + "\n" +
-                    "Location: " + campaign.getLocation() + "\n" +
-                    "Date: " + campaign.getDate() + "\n\n" +
-                    "Please visit our website for more details.\n\n" +
-                    "Best regards,\n" +
-                    "Misr Shoryan Elataa Team";
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmail());
+        message.setFrom("misrshoryanelataa@gmail.com");
+        message.setSubject("Update on Campaigns");
+        message.setText(body);
 
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(toEmail);
-            message.setFrom(fromEmail);
-            message.setSubject(subject);
-            message.setText(body);
-
-            mailSender.send(message);
-        });
-    }
+        mailSender.send(message);
+    });
+}
 }

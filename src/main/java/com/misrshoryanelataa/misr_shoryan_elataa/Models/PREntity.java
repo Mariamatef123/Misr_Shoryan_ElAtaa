@@ -1,5 +1,10 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Models;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 
@@ -7,8 +12,10 @@ import jakarta.persistence.OneToMany;
 public class PREntity extends StaffEntity {
     boolean isAdmin;
 
-    @OneToMany(mappedBy = "pr")
-    private List<CampaignEntity> campaigns;
+   
+@JsonManagedReference
+@OneToMany(mappedBy = "pr", cascade = CascadeType.ALL)
+private List<CampaignEntity> campaigns = new ArrayList<>();
 
     public void setIsAdmin(boolean isAdmin) {
         this.isAdmin = isAdmin;

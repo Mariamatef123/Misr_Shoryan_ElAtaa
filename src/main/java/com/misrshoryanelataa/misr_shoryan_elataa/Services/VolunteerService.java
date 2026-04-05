@@ -9,38 +9,44 @@ import com.misrshoryanelataa.misr_shoryan_elataa.Models.InterviewEntity;
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.InterviewSlotEntity;
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.VolunteerEntity;
 import com.misrshoryanelataa.misr_shoryan_elataa.Repos.InterviewRepo;
+import com.misrshoryanelataa.misr_shoryan_elataa.Repos.InterviewSlotsRepo;
 
 @Service
 public class VolunteerService {
     
     @Autowired
+    private InterviewSlotsRepo interviewSlotRepo;
+
+    @Autowired
     private InterviewRepo interviewRepo;
 
     @Autowired
     private VolunteerRepo volunteerRepo;
-    public List<InterviewEntity> getInterview() {
-        return interviewRepo.findAll().stream()
-                .collect(Collectors.toList());
+    public List<InterviewSlotEntity> getInterview() {
+        return interviewSlotRepo.findAll();
     }
 
     public List<InterviewSlotEntity> getAvailableInterviewSlots() {
         return interviewRepo.findAll().stream()
                 .flatMap(interview -> interview.getInterviewSlots().stream())
-                .filter(slot -> slot.getStatus() == InterviewStatus.AVALIABLE)
+                .filter(slot -> slot.getStatus() == InterviewStatus.AVAILABLE)
                 .collect(Collectors.toList());
     }
 
-    public Object chooseInterviewSlot(InterviewSlotEntity slot) {
+    public Object chooseInterviewSlot(InterviewSlotEntity slot,int volunteerId) {
         InterviewSlotEntity interviewSlot = interviewRepo.findAll().stream()
                 .flatMap(interview -> interview.getInterviewSlots().stream())
                 .filter(s -> s.getSlotID() == slot.getSlotID())
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Interview slot not found"));
+            VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
+                .orElseThrow(() -> new RuntimeException("Volunteer not found"));
 
-        if (interviewSlot.getStatus() != InterviewStatus.AVALIABLE) {
+        if (interviewSlot.getStatus() != InterviewStatus.AVAILABLE) {
             throw new RuntimeException("Interview slot is not available");
         }
-        interviewSlot.setStatus(InterviewStatus.UNAVALIABLE);
+        interviewSlot.setStatus(InterviewStatus.UNAVAILABLE);
+        interviewSlot.setVolunteer(volunteer);
         InterviewEntity interview = new InterviewEntity();
         interviewRepo.save(interview);
         return "Interview slot booked successfully";
@@ -50,9 +56,11 @@ public class VolunteerService {
        if(volunteerRepo.existsByEmail(volunteer.getEmail())){
            throw new RuntimeException("Email already exists");
        }
-       if(volunteer.getUniversityEmail().contains("@fcih.helwan.edu.eg")){
-        throw new RuntimeException("must enter your university email");
-       }
+if (volunteer.getUniversityEmail() == null ||
+    !volunteer.getUniversityEmail().endsWith("@fcih.helwan.edu.eg")) {
+
+    throw new RuntimeException("must enter your university email");
+}
         volunteer.setAssignedDepartment(null);
         volunteerRepo.save(volunteer);
     }

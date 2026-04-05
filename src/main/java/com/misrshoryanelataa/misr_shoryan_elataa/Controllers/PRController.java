@@ -21,9 +21,9 @@ public class PRController {
     @Autowired
     private PRService PRService;
 
-    @PostMapping("/campaigns")
-    public PREntity createCampaign(@RequestBody CampaignEntity campaign) {
-        return PRService.createCampaign(campaign);
+    @PostMapping("/campaigns/{prId}")
+    public PREntity createCampaign(@RequestBody CampaignEntity campaign,@PathVariable int prId) {
+        return PRService.createCampaign(campaign, prId);
     }
 
     @GetMapping("/campaigns")

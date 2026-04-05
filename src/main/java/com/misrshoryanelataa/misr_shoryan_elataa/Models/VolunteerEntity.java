@@ -1,5 +1,10 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Models;
 import jakarta.validation.constraints.Email;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.misrshoryanelataa.misr_shoryan_elataa.Enums.Role;
 import com.misrshoryanelataa.misr_shoryan_elataa.Enums.volunteerStatus;
 
@@ -7,6 +12,7 @@ import jakarta.annotation.Generated;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,17 +22,17 @@ import jakarta.persistence.OneToOne;
 
 @Entity
 public class VolunteerEntity extends UserEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
 
-    @Email
     String UniversityEmail;
 
-    @ManyToOne
-    @JoinColumn(name = "hr_id")
-    private HREntity hr;
 
+
+    @JsonManagedReference
+    @ManyToOne(fetch = FetchType.EAGER)
+@JoinColumn(name = "hr_id")
+private HREntity hr;
+
+    @JsonBackReference
     @OneToOne
     @JoinColumn(name = "interview_slot_id")
     private InterviewSlotEntity interviewSlot;

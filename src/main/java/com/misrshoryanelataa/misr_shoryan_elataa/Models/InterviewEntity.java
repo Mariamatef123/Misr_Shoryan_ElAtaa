@@ -1,6 +1,11 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Models;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -8,20 +13,20 @@ public class InterviewEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
-@OneToMany(mappedBy = "interview", cascade = CascadeType.ALL)
-private List<InterviewSlotEntity> interviewSlots;
-
+@JsonManagedReference
+@OneToMany(mappedBy = "interview", cascade = CascadeType.ALL, orphanRemoval = true)
+private List<InterviewSlotEntity> interviewSlots = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "hr_id")
     private HREntity hr;
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -1,6 +1,9 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Models;
 import java.sql.Date;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -17,6 +20,7 @@ public class CampaignEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     Date date;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "pr_id")
     private PREntity pr;

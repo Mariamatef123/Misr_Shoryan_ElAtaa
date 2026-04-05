@@ -1,6 +1,7 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class HRController {
     @Autowired
     private HRService hrService;
 
-    @PostMapping("/create/{hrId}")
+    @PostMapping("/create-interview/{hrId}")
     public ResponseEntity<String> createInterview(
             @PathVariable int hrId,
             @RequestBody InterviewEntity interview) {
@@ -34,7 +35,7 @@ public class HRController {
         return ResponseEntity.ok("Interview created successfully");
     }
 
-    @PostMapping("/{interviewId}/slots")
+    @PostMapping("interview/{interviewId}/slots")
     public ResponseEntity<String> addInterviewSlot(
             @PathVariable int interviewId,
             @RequestBody InterviewSlotEntity slot) {
@@ -69,10 +70,6 @@ public class HRController {
         return ResponseEntity.ok("Interview slot updated successfully");
     }
 
-    @GetMapping("/volunteers")
-    public List<VolunteerEntity> getAllVolunteers(int hrId) {
-        return hrService.getAllVolunteers(hrId);
-    }
 
 
 //staff-----------------
@@ -126,13 +123,17 @@ public ResponseEntity<String> createStaff(
 
 
 //volunteer-----------------
-    @PostMapping("/assign-volunteer/{volId}")
-    public String assignVolunteer(
-            @RequestParam int assignerHrId,
-            @PathVariable int volunteerId,
-            @RequestParam int targetHrId) {
+    @GetMapping("/volunteers/{hrId}")
+    public List<VolunteerEntity> getAllVolunteers(@PathVariable int hrId) {
+        return hrService.getAllVolunteers(hrId);
+    }
 
-        hrService.assignVolunteerToHR(assignerHrId, volunteerId, targetHrId);
+@PostMapping("/assign-volunteer")
+public String assignVolunteer(@RequestBody Map<String, Integer> data) {
+    hrService.assignVolunteerToHR(
+            data.get("assignerHrId"),
+            data.get("volunteerId"),
+            data.get("targetHrId"));
         return "Volunteer assigned successfully";
     }
 
@@ -147,21 +148,29 @@ public ResponseEntity<String> createStaff(
     public List<VolunteerEntity> getVolunteersAssignedToHR(@PathVariable int hrId) {
         return hrService.getVolunteersAssignedToHR(hrId);
     }
-    @PostMapping("/accept-volunteer")
-    public void acceptVolunteer(@RequestParam int volunteerId, @RequestParam int hrId, Role assignedDepartment) {
-        hrService.acceptVolunteer(volunteerId, hrId, assignedDepartment);
+    @PostMapping("/accept-volunteer/{volunteerId}/{hrId}")
+    public ResponseEntity<String> acceptVolunteer(@PathVariable int volunteerId, @PathVariable int hrId,@RequestBody Role assignedDepartment) {
+        try {
+            hrService.acceptVolunteer(volunteerId, hrId, assignedDepartment);
+            return ResponseEntity.ok("Volunteer accepted successfully");
+        } catch (RuntimeException ex) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(ex.getMessage());
+        }
+      
     }
 
-    @PostMapping("/reject-volunteer")
-    public void rejectVolunteer(@RequestParam int volunteerId, @RequestParam int hrId) {
+    @PostMapping("/reject-volunteer/{volunteerId}/{hrId}")
+    public void rejectVolunteer(@PathVariable int volunteerId, @PathVariable int hrId) {
         hrService.rejectVolunteer(volunteerId, hrId);
     }
 
-    @PostMapping("/choose-dept")
-    public void chooseDepartmentForVolunteer(@RequestParam int volunteerId, @RequestParam int hrId,
+    @PostMapping("/choose-dept/{volId}/{hrId}")
+    public void chooseDepartmentForVolunteer(@PathVariable int volId, @PathVariable int hrId,
             @RequestBody Role assignedDepartment) {
 
-        hrService.chooseDepartmentForVolunteer(volunteerId, hrId, assignedDepartment);
+        hrService.chooseDepartmentForVolunteer(volId, hrId, assignedDepartment);
         ;
     }
 //----------------------------

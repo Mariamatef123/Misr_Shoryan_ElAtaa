@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +23,7 @@ public class VolunteerController {
     VolunteerService volunteerService;
 
     @GetMapping("/volunteer/interview")
-    public List<InterviewEntity> getInterview() {
+    public List<InterviewSlotEntity> getInterview() {
         return volunteerService.getInterview();
     }
 
@@ -31,9 +32,14 @@ public class VolunteerController {
         return volunteerService.getAvailableInterviewSlots();
     }
 
-    @PostMapping("/volunteer/choose-slot")
-    public Object chooseInterviewSlot(@RequestBody InterviewSlotEntity slot) {
-        return volunteerService.chooseInterviewSlot(slot);
+    @PostMapping("/volunteer/{volunteerId}/choose-slot/{slotId}")
+    public Object chooseInterviewSlot(@PathVariable int slotId, @PathVariable int volunteerId) {
+        InterviewSlotEntity slot = volunteerService.getInterview().stream()
+                .filter(s -> s.getSlotID() == slotId)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Interview slot not found"));
+        
+        return volunteerService.chooseInterviewSlot(slot,volunteerId);
     }
 
     @PostMapping("/create-volunteer")
@@ -48,4 +54,6 @@ public class VolunteerController {
                 .body(ex.getMessage());
     }
     }
+
+    
 }

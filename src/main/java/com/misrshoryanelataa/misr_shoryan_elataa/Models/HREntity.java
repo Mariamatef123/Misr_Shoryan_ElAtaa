@@ -2,6 +2,8 @@ package com.misrshoryanelataa.misr_shoryan_elataa.Models;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 
@@ -13,6 +15,7 @@ public class HREntity extends StaffEntity {
         this.isAdmin = isAdmin;
     }
 
+    @JsonBackReference
     @OneToMany(mappedBy = "hr")
     private List<VolunteerEntity> volunteers;
 
