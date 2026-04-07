@@ -2,7 +2,7 @@ package com.misrshoryanelataa.misr_shoryan_elataa.Controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.misrshoryanelataa.misr_shoryan_elataa.Models.InterviewEntity;
+
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.InterviewSlotEntity;
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.VolunteerEntity;
 import com.misrshoryanelataa.misr_shoryan_elataa.Services.VolunteerService;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController

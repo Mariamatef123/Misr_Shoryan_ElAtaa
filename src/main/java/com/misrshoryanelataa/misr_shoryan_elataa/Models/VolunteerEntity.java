@@ -1,21 +1,15 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Models;
-import jakarta.validation.constraints.Email;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.misrshoryanelataa.misr_shoryan_elataa.Enums.Role;
 import com.misrshoryanelataa.misr_shoryan_elataa.Enums.volunteerStatus;
 
-import jakarta.annotation.Generated;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
@@ -27,8 +21,8 @@ public class VolunteerEntity extends UserEntity {
 
 
 
-    @JsonManagedReference
-    @ManyToOne(fetch = FetchType.EAGER)
+@JsonManagedReference
+@ManyToOne(fetch = FetchType.EAGER)
 @JoinColumn(name = "hr_id")
 private HREntity hr;
 
