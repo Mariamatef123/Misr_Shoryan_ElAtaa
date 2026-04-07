@@ -32,7 +32,7 @@ public class CampaignEntity {
     public void setPr(PREntity pr) {
         this.pr = pr;
     }
-
+    
     public PREntity getPr() {
         return pr;
     }

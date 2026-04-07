@@ -13,9 +13,9 @@ public class InterviewEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-@JsonManagedReference
-@OneToMany(mappedBy = "interview", cascade = CascadeType.ALL, orphanRemoval = true)
-private List<InterviewSlotEntity> interviewSlots = new ArrayList<>();
+    @JsonManagedReference
+    @OneToMany(mappedBy = "interview", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<InterviewSlotEntity> interviewSlots = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "hr_id")

@@ -30,10 +30,9 @@ public class HRController {
     public ResponseEntity<String> createInterview(
             @PathVariable int hrId,
             @RequestBody InterviewEntity interview) {
-
         hrService.createInterview(hrId, interview);
         return ResponseEntity.ok("Interview created successfully");
-    }
+}
 
     @PostMapping("interview/{interviewId}/slots")
     public ResponseEntity<String> addInterviewSlot(
@@ -145,7 +144,7 @@ public String assignVolunteer(@RequestBody Map<String, Integer> data) {
     }
 
     @GetMapping("/volunteerAssignedToHr/{hrId}")
-    public List<VolunteerEntity> getVolunteersAssignedToHR(@PathVariable int hrId) {
+    public List<VolunteerEntity>getVolunteersAssignedToHR(@PathVariable int hrId) {
         return hrService.getVolunteersAssignedToHR(hrId);
     }
     @PostMapping("/accept-volunteer/{volunteerId}/{hrId}")
