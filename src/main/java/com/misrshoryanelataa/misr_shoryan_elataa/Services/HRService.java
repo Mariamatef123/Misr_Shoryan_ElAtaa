@@ -82,12 +82,7 @@ public void createInterview(int hrId, InterviewEntity interview) {
         hrRepo.save(hr);
     }
 
-    public List<InterviewSlotEntity> getAllInterviewSlots(int hrId) {
-
-        if (!isAdmin(hrId)) {
-            throw new RuntimeException("Only admins can get interview slots");
-        }
-
+    public List<InterviewSlotEntity> getAllInterviewSlots() {
         return interviewSlotRepo.findAll();
     }
 

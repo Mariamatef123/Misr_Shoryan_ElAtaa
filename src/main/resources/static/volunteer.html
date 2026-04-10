@@ -1,174 +1,401 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>شريان العطاء - تطوع معنا</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="CSS/style.css" />
     <style>
-        .calendar-grid, .time-slots {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-            margin-bottom: 20px;
-        }
-        .item-box {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: center;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
-        .available {
-            background-color: #e8f5e9;
-            color: #2e7d32;
-            border-color: #a5d6a7;
-        }
-        .disabled {
-            background-color: #f5f5f5;
-            color: #9e9e9e;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-        .selected {
-            background-color: #c62828 !important;
-            color: white !important;
-            border-color: #b71c1c;
-            transform: scale(1.05);
-        }
-        .hidden { display: none; }
+      .calendar-grid,
+      .time-slots {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(93px, 1fr));
+        gap: 10px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+      }
+      .item-box {
+        padding: 8px;
+        border: 1px solid #ddd;
+        text-align: center;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-size: 14px;
+      }
+      .available {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        border-color: #a5d6a7;
+      }
+      .disabled {
+        background-color: #f5f5f5;
+        color: #9e9e9e;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+      .selected {
+        background-color: #c62828 !important;
+        color: white !important;
+        border-color: #b71c1c;
+        transform: scale(1.05);
+      }
+      .hidden {
+        display: none;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <nav class="navbar">
-        <div class="logo-container">
-            <img src="logo.jpg" style="height: 50px;" alt="Logo">
-              <!-- <h1 class="hadeer">شريان العطاء</h1> 
+      <div class="logo-container">
+        <img src="Images/logo.jpg" style="height: 50px" alt="Logo" />
+        <!-- <h1 class="hadeer">شريان العطاء</h1> 
               <span class="heart-icon">❤️</span> -->
-        </div>
-        <a href="index.html" class="nav-item">الرئيسية</a>
+      </div>
+      <a href="index.html" class="nav-item">الرئيسية</a>
     </nav>
 
     <div class="content-box">
-        <h1 style="text-align: center;">كن شرياناً للحياة.. تطوع معنا!</h1>
-        <p style="text-align: center; color: #666;">"تطوعك هو أمل جديد لطفل مريض."</p>
-        
-        <form id="volunteerForm" style="max-width: 600px; margin: 20px auto;">
-            <input type="text" id="userName" placeholder="الاسم" required style="width: 100%; padding: 10px; margin-bottom: 10px;">
-            <input type="text" id="userYear" placeholder="السنة الدراسية" required style="width: 100%; padding: 10px; margin-bottom: 10px;">
-            <input type="email" id="userEmail" placeholder="الايميل الجامعي" required style="width: 100%; padding: 10px; margin-bottom: 10px;">
-            
-            <h3>1. اختر الشهر</h3>
-            <div id="monthPicker" class="calendar-grid"></div>
+      <h1 style="text-align: center">كن شرياناً للحياة.. تطوع معنا!</h1>
+      <p style="text-align: center; color: #666">
+        "تطوعك هو أمل جديد لطفل مريض."
+      </p>
 
-            <div id="daySection" class="hidden">
-                <h3>2. اختر اليوم</h3>
-                <div id="dayPicker" class="calendar-grid"></div>
-            </div>
+      <form id="volunteerForm" style="max-width: 600px; margin: 20px auto">
+        <input
+          type="text"
+          id="userName"
+          placeholder="الاسم"
+          required
+          style="width: 100%; padding: 10px; margin-bottom: 10px"
+        />
+        <!-- <input
+          type="text"
+          id="userYear"
+          placeholder="السنة الدراسية"
+          required
+          style="width: 100%; padding: 10px; margin-bottom: 10px"
+        /> -->
+        <input
+          type="email"
+          id="userEmail"
+          placeholder="الايميل الجامعي"
+          required
+          style="width: 100%; padding: 10px; margin-bottom: 10px"
+        />
 
-            <div id="timeSection" class="hidden">
-                <h3>3. اختر موعد المقابلة</h3>
-                <div id="timePicker" class="time-slots"></div>
-            </div>
+        <!-- <h3>1. اختر الشهر</h3>
+        <div id="monthPicker" class="calendar-grid"></div>
 
-            <button type="submit" class="btn-submit-step" style="margin-top: 20px; width: 100%; padding: 15px; background: #c62828; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                إرسال طلب التطوع
-            </button>
-        </form>
+        <div id="daySection" class="hidden"> -->
+        <h3>أختر الميعاد</h3>
+        <div id="slotsContainer" class="time-slots"></div>
+        <!-- <div id="dayPicker" class="calendar-grid"></div> -->
+        <!-- </div>
+
+        <div id="timeSection" class="hidden">
+          <h3>3. اختر موعد المقابلة</h3>
+          <div id="timePicker" class="time-slots"></div>
+        </div> -->
+
+        <button
+          type="submit"
+          class="btn-submit-step"
+          style="
+            margin-top: 20px;
+            width: 100%;
+            padding: 15px;
+            background: #c62828;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+          "
+        >
+          إرسال طلب التطوع
+        </button>
+      </form>
     </div>
 
-    <script>
-        const months = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
-        const timeSlots = [
-                       "01:00 ص", "02:00 ص", "03:00 ص", "04:00 ص", "05:00 ص", "06:00 ص",
-                         "07:00 ص","08:00 ص","09:00 ص","10:00 ص","11:00 ص","12:00 ص",
-                       "01:00 م", "02:00 م", "03:00 م", "04:00 م", "05:00 م", "06:00 م",
-                         "07:00 م","08:00 م","09:00 م","10:00 م","11:00 م","12:00 م"
+    <!-- <script>
+            // const months = [
+            //   "يناير",
+            //   "فبراير",
+            //   "مارس",
+            //   "أبريل",
+            //   "مايو",
+            //   "يونيو",
+            //   "يوليو",
+            //   "أغسطس",
+            //   "سبتمبر",
+            //   "أكتوبر",
+            //   "نوفمبر",
+            //   "ديسمبر",
+            // ];
+            // const timeSlots = [
+            //   "01:00 ص",
+            //   "02:00 ص",
+            //   "03:00 ص",
+            //   "04:00 ص",
+            //   "05:00 ص",
+            //   "06:00 ص",
+            //   "07:00 ص",
+            //   "08:00 ص",
+            //   "09:00 ص",
+            //   "10:00 ص",
+            //   "11:00 ص",
+            //   "12:00 ص",
+            //   "01:00 م",
+            //   "02:00 م",
+            //   "03:00 م",
+            //   "04:00 م",
+            //   "05:00 م",
+            //   "06:00 م",
+            //   "07:00 م",
+            //   "08:00 م",
+            //   "09:00 م",
+            //   "10:00 م",
+            //   "11:00 م",
+            //   "12:00 م",
+            // ];
+            const interviewSlots = [];
+      try {
+        const response = await fetch("http://localhost:9090/slots", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
 
-        ];
+        if (!response.ok) {
+          throw new Error("Failed to fetch slots");
+        }
 
-        
-        function initApp() {
-            const monthContainer = document.getElementById('monthPicker');
-            months.forEach((m, index) => {
-                const div = document.createElement('div');
-                div.className = 'item-box available';
+        const data = await response.json();
+
+        console.log(data);
+
+
+        const container = document.getElementById("slotsContainer");
+        container.innerHTML = "";
+
+        data.forEach(slot => {
+          const div = document.createElement("div");
+          div.textContent = `Date: ${slot.slotDate} | Time: ${slot.slotTime} | Status: ${slot.status}`;
+          container.appendChild(div);
+        });
+
+      } catch (error) {
+        console.error("Error:", error);
+      }
+            function initApp() {
+              const monthContainer = document.getElementById("monthPicker");
+              months.forEach((m, index) => {
+                const div = document.createElement("div");
+                div.className = "item-box available";
                 div.innerText = m;
                 div.onclick = () => selectMonth(div, index);
                 monthContainer.appendChild(div);
-            });
-        }
+              });
+            }
 
-      
-        function selectMonth(el, monthIdx) {
-            clearSelection('#monthPicker .item-box');
-            el.classList.add('selected');
-            
-            document.getElementById('daySection').classList.remove('hidden');
-            const dayContainer = document.getElementById('dayPicker');
-            dayContainer.innerHTML = ''; 
+            function selectMonth(el, monthIdx) {
+              clearSelection("#monthPicker .item-box");
+              el.classList.add("selected");
 
-            for (let i = 1; i <= 30; i++) {
-                const dayDiv = document.createElement('div');
-         
-                const isDisabled = (i % 5 === 0); 
-                dayDiv.className = `item-box ${isDisabled ? 'disabled' : 'available'}`;
+              document.getElementById("daySection").classList.remove("hidden");
+              const dayContainer = document.getElementById("dayPicker");
+              dayContainer.innerHTML = "";
+
+              for (let i = 1; i <= 30; i++) {
+                const dayDiv = document.createElement("div");
+
+                const isDisabled = i % 5 === 0;
+                dayDiv.className = `item-box ${isDisabled ? "disabled" : "available"}`;
                 dayDiv.innerText = i;
                 if (!isDisabled) {
-                    dayDiv.onclick = () => selectDay(dayDiv, i);
+                  dayDiv.onclick = () => selectDay(dayDiv, i);
                 }
                 dayContainer.appendChild(dayDiv);
+              }
             }
-        }
 
-        function selectDay(el, dayNum) {
-            clearSelection('#dayPicker .item-box');
-            el.classList.add('selected');
-            
-            document.getElementById('timeSection').classList.remove('hidden');
-            const timeContainer = document.getElementById('timePicker');
-            timeContainer.innerHTML = '';
+            function selectDay(el, dayNum) {
+              clearSelection("#dayPicker .item-box");
+              el.classList.add("selected");
 
-            timeSlots.forEach(slot => {
-                const slotDiv = document.createElement('div');
-                slotDiv.className = 'item-box available';
+              document.getElementById("timeSection").classList.remove("hidden");
+              const timeContainer = document.getElementById("timePicker");
+              timeContainer.innerHTML = "";
+
+              timeSlots.forEach((slot) => {
+                const slotDiv = document.createElement("div");
+                slotDiv.className = "item-box available";
                 slotDiv.innerText = slot;
                 slotDiv.onclick = () => {
-                    clearSelection('#timePicker .item-box');
-                    slotDiv.classList.add('selected');
+                  clearSelection("#timePicker .item-box");
+                  slotDiv.classList.add("selected");
                 };
                 timeContainer.appendChild(slotDiv);
-            });
-        }
-
-        function clearSelection(selector) {
-            document.querySelectorAll(selector).forEach(item => item.classList.remove('selected'));
-        }
-
-        
-        document.getElementById('volunteerForm').onsubmit = function(e) {
-            e.preventDefault();
-            
-           
-            const selectedMonth = document.querySelector('#monthPicker .selected');
-            const selectedDay = document.querySelector('#dayPicker .selected');
-            const selectedTime = document.querySelector('#timePicker .selected');
-
-            if (!selectedMonth || !selectedDay || !selectedTime) {
-                alert("من فضلك اختر الشهر واليوم والوقت أولاً");
-                return;
+              });
             }
 
-            alert("تم التسجيل بنجاح! سيتم توجيهك للصفحة الرئيسية.");
-            
-            setTimeout(() => {
-                window.location.href = "index.html";
-            }, 1500);
-        };
+            function clearSelection(selector) {
+              document
+                .querySelectorAll(selector)
+                .forEach((item) => item.classList.remove("selected"));
+            }
 
-        window.onload = initApp;
+            document.getElementById("volunteerForm").onsubmit = function (e) {
+              e.preventDefault();
+
+              const selectedMonth = document.querySelector("#monthPicker .selected");
+              const selectedDay = document.querySelector("#dayPicker .selected");
+              const selectedTime = document.querySelector("#timePicker .selected");
+
+              if (!selectedMonth || !selectedDay || !selectedTime) {
+                alert("من فضلك اختر الشهر واليوم والوقت أولاً");
+                return;
+              }
+
+              alert("تم التسجيل بنجاح! سيتم توجيهك للصفحة الرئيسية.");
+
+              setTimeout(() => {
+                window.location.href = "index.html";
+              }, 1500);
+            };
+
+            window.onload = initApp;
+    </script> -->
+    <script>
+      let selectedSlot = null;
+
+      async function loadSlots() {
+        try {
+          const response = await fetch("http://localhost:9090/slots");
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch slots");
+          }
+
+          const data = await response.json();
+          console.log("Slots:", data);
+
+          const container = document.getElementById("slotsContainer");
+          container.innerHTML = "";
+
+          data.forEach((slot) => {
+            const div = document.createElement("div");
+            div.className = "item-box";
+
+            if (slot.status === "AVAILABLE") {
+              div.classList.add("available");
+
+              div.onclick = () => selectSlot(div, slot);
+            } else {
+              div.classList.add("disabled");
+            }
+
+            div.innerHTML = `
+              <div>${slot.slotDate}</div>
+              <div>${slot.slotTime}</div>
+            `;
+
+            container.appendChild(div);
+          });
+        } catch (error) {
+          console.error("Error loading slots:", error);
+          alert("فشل تحميل المواعيد");
+        }
+      }
+
+      function selectSlot(element, slot) {
+        clearSelection("#slotsContainer .item-box");
+
+        element.classList.add("selected");
+        selectedSlot = slot;
+
+        console.log("Selected slot:", selectedSlot);
+      }
+
+      function clearSelection(selector) {
+        document
+          .querySelectorAll(selector)
+          .forEach((item) => item.classList.remove("selected"));
+      }
+
+      document.getElementById("volunteerForm").onsubmit = async function (e) {
+        e.preventDefault();
+
+        if (!selectedSlot) {
+          alert("من فضلك اختر موعد المقابلة أولاً");
+          return;
+        }
+
+        const name = document.getElementById("userName").value.trim();
+        const email = document.getElementById("userEmail").value.trim();
+
+        console.log("Email sent:", email);
+
+        const submitBtn = document.querySelector(".btn-submit-step");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "جاري الحجز...";
+
+        try {
+          const createResponse = await fetch(
+            "http://localhost:9090/create-volunteer",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                name: name,
+                universityEmail: email,
+              }),
+            },
+          );
+
+          const text = await createResponse.text();
+
+          let createResult;
+          try {
+            createResult = JSON.parse(text);
+          } catch {
+            createResult = text;
+          }
+
+          if (!createResponse.ok) {
+            throw new Error(
+              typeof createResult === "string"
+                ? createResult
+                : createResult.message || "Error creating volunteer",
+            );
+          }
+
+          console.log("Volunteer created:", createResult);
+
+          const chooseResponse = await fetch(
+            `http://localhost:9090/volunteer/${createResult.id}/choose-slot/${selectedSlot.interviewSlotID}`,
+            {
+              method: "POST",
+            },
+          );
+
+          if (!chooseResponse.ok) {
+            throw new Error("فشل حجز الموعد");
+          }
+
+          alert("تم حجز الموعد بنجاح");
+          window.location.href = "index.html";
+          document.getElementById("volunteerForm").reset();
+          selectedSlot = null;
+          clearSelection("#slotsContainer .item-box");
+        } catch (error) {
+          console.error("Error:", error);
+          alert(error.message || "حدث خطأ");
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerText = "إرسال طلب التطوع";
+        }
+      };
+
+      window.onload = loadSlots;
     </script>
-</body>
+  </body>
 </html>

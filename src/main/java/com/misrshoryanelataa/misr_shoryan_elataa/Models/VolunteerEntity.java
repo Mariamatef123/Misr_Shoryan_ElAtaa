@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.misrshoryanelataa.misr_shoryan_elataa.Enums.Role;
 import com.misrshoryanelataa.misr_shoryan_elataa.Enums.volunteerStatus;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -16,8 +17,9 @@ import jakarta.persistence.OneToOne;
 
 @Entity
 public class VolunteerEntity extends UserEntity {
+    @Column(name="UniversityEmail")
+    String universityEmail;
 
-    String UniversityEmail;
 
 
 
@@ -52,11 +54,11 @@ private HREntity hr;
     }
 
     public void setUniversityEmail(String universityEmail) {
-        UniversityEmail = universityEmail;
+        this.universityEmail = universityEmail;
     }
 
     public String getUniversityEmail() {
-        return UniversityEmail;
+        return universityEmail;
     }
 
     public String getPhoneNumber() {

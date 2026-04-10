@@ -43,11 +43,11 @@ public class HRController {
         return ResponseEntity.ok("Interview slot added successfully");
     }
 
-    @GetMapping("/slots/{hrId}")
+    @GetMapping("/slots")
     public ResponseEntity<List<InterviewSlotEntity>> getAllInterviewSlots(
-            @PathVariable int hrId) {
+        ) {
 
-        return ResponseEntity.ok(hrService.getAllInterviewSlots(hrId));
+        return ResponseEntity.ok(hrService.getAllInterviewSlots());
     }
 
     @DeleteMapping("/slots/{hrId}/{slotId}")

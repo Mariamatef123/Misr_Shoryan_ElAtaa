@@ -6,4 +6,6 @@ import com.misrshoryanelataa.misr_shoryan_elataa.Models.VolunteerEntity;
 @Repository
 public interface VolunteerRepo extends JpaRepository<VolunteerEntity, Integer> {
       boolean existsByEmail(String email);
+
+      boolean existsByUniversityEmail(String universityEmail);
 }
