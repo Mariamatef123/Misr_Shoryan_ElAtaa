@@ -1,30 +1,19 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Services;
-import com.misrshoryanelataa.misr_shoryan_elataa.Repos.InterviewRepo;
-import com.misrshoryanelataa.misr_shoryan_elataa.Repos.PrRepo;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
-import java.util.stream.Collectors;
-
+import com.misrshoryanelataa.misr_shoryan_elataa.Enums.InterviewStatus;
+import com.misrshoryanelataa.misr_shoryan_elataa.Enums.Role;
+import com.misrshoryanelataa.misr_shoryan_elataa.Enums.volunteerStatus;
+import com.misrshoryanelataa.misr_shoryan_elataa.Models.*;
+import com.misrshoryanelataa.misr_shoryan_elataa.Repos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import com.misrshoryanelataa.misr_shoryan_elataa.Enums.InterviewStatus;
-import com.misrshoryanelataa.misr_shoryan_elataa.Enums.Role;
-import com.misrshoryanelataa.misr_shoryan_elataa.Enums.volunteerStatus;
-import com.misrshoryanelataa.misr_shoryan_elataa.Models.HREntity;
-import com.misrshoryanelataa.misr_shoryan_elataa.Models.InterviewEntity;
-import com.misrshoryanelataa.misr_shoryan_elataa.Models.InterviewSlotEntity;
-import com.misrshoryanelataa.misr_shoryan_elataa.Models.PREntity;
-import com.misrshoryanelataa.misr_shoryan_elataa.Models.StaffEntity;
-import com.misrshoryanelataa.misr_shoryan_elataa.Models.VolunteerEntity;
-import com.misrshoryanelataa.misr_shoryan_elataa.Repos.HrRepo;
-import com.misrshoryanelataa.misr_shoryan_elataa.Repos.InterviewSlotsRepo;
-import com.misrshoryanelataa.misr_shoryan_elataa.Repos.StaffRepo;
-import com.misrshoryanelataa.misr_shoryan_elataa.Repos.VolunteerRepo;
+
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class HRService {
@@ -50,6 +39,9 @@ public class HRService {
 
     @Autowired
     PrRepo prRepo;
+
+    @Autowired
+    LEPRepo lepRepo;
 
     private boolean isAdmin(int hrId) {
         return hrRepo.findById(hrId)
@@ -214,6 +206,16 @@ if (staff.getRole() == Role.HR_ADMIN || staff.getRole() == Role.HR_MEMBER) {
         newPr.setRole(staff.getRole()); 
         newPr.setIsAdmin(staff.getRole() == Role.PR_ADMIN); 
         prRepo.save(newPr);
+        return;
+    }
+    if (staff.getRole() == Role.LEP) {
+        LEPEntity lep=new LEPEntity();
+        lep.setName(staff.getName());
+        lep.setEmail(staff.getEmail());
+        lep.setPassword(staff.getPassword());
+        lep.setOfficialEmail(staff.getOfficialEmail());
+        lep.setRole(staff.getRole());
+        lepRepo.save(lep);
         return;
     }
 
