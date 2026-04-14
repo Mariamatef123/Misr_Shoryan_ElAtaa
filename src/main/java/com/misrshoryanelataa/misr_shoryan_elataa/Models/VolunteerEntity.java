@@ -1,7 +1,9 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Models;
+import java.time.LocalDate;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.misrshoryanelataa.misr_shoryan_elataa.Enums.Role;
 import com.misrshoryanelataa.misr_shoryan_elataa.Enums.volunteerStatus;
 
@@ -32,6 +34,12 @@ private HREntity hr;
     @OneToOne
     @JoinColumn(name = "interview_slot_id")
     private InterviewSlotEntity interviewSlot;
+
+
+@JsonProperty("interview_slot_date")
+public LocalDate getInterviewSlotDate() {
+    return interviewSlot != null ? interviewSlot.getSlotDate() : null;
+}
 
 
     @Enumerated(EnumType.STRING)

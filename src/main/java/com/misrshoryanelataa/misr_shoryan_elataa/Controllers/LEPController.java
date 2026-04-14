@@ -146,6 +146,10 @@ public class LEPController {
             @RequestParam int donorId) {
         lepService.sendEmailToDonor(donorId);
     }
+    @GetMapping("/donors/editable/{lepId}")
+    public List<Object> getDonorsEditable(@PathVariable int lepId) {
+        return lepService.getDonorsEditable(lepId);
+    }
 
     @PostMapping("/accept-donor/{donorId}/{lepId}")
     public ResponseEntity<String> acceptVolunteer(@PathVariable int donorId, @PathVariable int lepId) {

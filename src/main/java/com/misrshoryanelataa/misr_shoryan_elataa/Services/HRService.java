@@ -5,11 +5,17 @@ import com.misrshoryanelataa.misr_shoryan_elataa.Enums.Role;
 import com.misrshoryanelataa.misr_shoryan_elataa.Enums.volunteerStatus;
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.*;
 import com.misrshoryanelataa.misr_shoryan_elataa.Repos.*;
+
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -206,12 +212,47 @@ public class HRService {
 //-------------------------
 
     public List<VolunteerEntity> getAllVolunteers(int hrId) {
-        if (!hrRepo.findAll().stream().filter(hr -> hr.getId() == hrId).findFirst().map(hr -> hr.getIsAdmin())
-                .orElse(false)) {
-            throw new RuntimeException("Only admins can get volunteers");
+
+        HREntity hr = hrRepo.findById(hrId)
+                .orElseThrow(() -> new RuntimeException("HR not found"));
+        if(hr.getIsAdmin()){
+            return volunteerRepo.findAll();
         }
-        return volunteerRepo.findAll();
+        else{
+
+            return volunteerRepo.findAll()
+                    .stream()
+                    .filter(volunteer -> volunteer.getHr() != null && volunteer.getHr().getId() == hrId)
+                    .collect(Collectors.toList());
+        }
+
+        // if (!hrRepo.findAll().stream().filter(hr -> hr.getId() == hrId).findFirst().map(hr -> hr.getIsAdmin())
+        //         .orElse(false)) {
+        //     throw new RuntimeException("Only admins can get volunteers");
+        // }
+        // return volunteerRepo.findAll();
     }
+
+   public List<Object> getVolunteersEditable(int hrId){
+            HREntity hr = hrRepo.findById(hrId)
+                .orElseThrow(() -> new RuntimeException("HR not found"));
+                        if(!hr.getIsAdmin()){
+                LocalDate today = LocalDate.now();
+             
+       return interviewSlotRepo.findAll().stream()
+                .filter(slot -> slot.getSlotDate().isBefore(today) && slot.getVolunteer() != null && slot.getVolunteer().getHr() != null && slot.getVolunteer().getHr().getId() == hrId)
+                .map(slot -> {
+                    VolunteerEntity volunteer = slot.getVolunteer();
+                    
+                    if (!hr.getVolunteers().contains(volunteer)) {
+                        hr.getVolunteers().add(volunteer);
+                    }
+                    return volunteer;
+                }).collect(Collectors.toList());}
+                else{
+                    return new ArrayList<>();
+                }
+   }
 
     public void assignVolunteerToHR(int assignerHrId, int volunteerId, int targetHrId) {
 

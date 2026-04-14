@@ -127,6 +127,10 @@ public ResponseEntity<String> createStaff(
         return hrService.getAllVolunteers(hrId);
     }
 
+    @GetMapping("/volunteers/editable/{hrId}")
+    public List<Object> getVolunteersEditable(@PathVariable int hrId) {
+        return hrService.getVolunteersEditable(hrId);
+    }
 @PostMapping("/assign-volunteer")
 public String assignVolunteer(@RequestBody Map<String, Integer> data) {
     hrService.assignVolunteerToHR(

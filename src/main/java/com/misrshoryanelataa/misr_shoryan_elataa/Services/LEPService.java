@@ -5,7 +5,9 @@ import com.misrshoryanelataa.misr_shoryan_elataa.Enums.volunteerStatus;
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.ChildEntity;
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.DonGroupEntity;
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.DonorEntity;
+import com.misrshoryanelataa.misr_shoryan_elataa.Models.HREntity;
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.LEPEntity;
+import com.misrshoryanelataa.misr_shoryan_elataa.Models.VolunteerEntity;
 import com.misrshoryanelataa.misr_shoryan_elataa.Repos.ChildRepo;
 import com.misrshoryanelataa.misr_shoryan_elataa.Repos.DonGroupRepo;
 import com.misrshoryanelataa.misr_shoryan_elataa.Repos.DonorRepo;
@@ -18,7 +20,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LEPService {
@@ -345,6 +349,28 @@ public class LEPService {
     public List<DonorEntity> getPendingDonors() {
         return donorService.getPendingDonors();
     }
+      
+    public List<Object> getDonorsEditable(int lepId){
+            LEPEntity lep = lepRepo.findById(lepId)
+                .orElseThrow(() -> new RuntimeException("LEP not found"));
+            
+                LocalDate today = LocalDate.now();
+                Date date = java.sql.Date.valueOf(LocalDate.now());
+            
+             
+       try {
+        return donorRepo.findAll().stream()
+                  .filter(donor -> 
+        donor.getDonorstatus() == volunteerStatus.PENDING &&
+        donor.getCheckUP() != null &&
+        donor.getCheckUP().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate().isBefore(today)
+).collect(Collectors.toList());
+    } catch (Exception e) {
+        return new ArrayList<>();
+    }}
+
+
+
 }
 
 
