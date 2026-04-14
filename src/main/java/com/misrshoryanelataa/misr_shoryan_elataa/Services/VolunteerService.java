@@ -47,22 +47,28 @@ public class VolunteerService {
         }
         interviewSlot.setStatus(InterviewStatus.UNAVAILABLE);
         interviewSlot.setVolunteer(volunteer);
+        volunteer.setInterviewSlot(interviewSlot);
         InterviewEntity interview = new InterviewEntity();
+        volunteerRepo.save(volunteer);
         interviewRepo.save(interview);
         return "Interview slot booked successfully";
     }
 
-    public void createVolunteer(VolunteerEntity volunteer) {
-       if(volunteerRepo.existsByEmail(volunteer.getEmail())){
-           throw new RuntimeException("Email already exists");
-       }
-if (volunteer.getUniversityEmail() == null ||
-    !volunteer.getUniversityEmail().endsWith("@fcih.helwan.edu.eg")) {
+public VolunteerEntity createVolunteer(VolunteerEntity volunteer) {
 
-    throw new RuntimeException("must enter your university email");
-}
-        volunteer.setAssignedDepartment(null);
-        volunteerRepo.save(volunteer);
+    if (volunteerRepo.existsByUniversityEmail(volunteer.getUniversityEmail())) {
+        throw new RuntimeException("Email already exists");
     }
+
+    if (volunteer.getUniversityEmail() == null ||
+        !volunteer.getUniversityEmail().endsWith("@med.asu.eg")) {
+
+        throw new RuntimeException("must enter your university email");
+    }
+
+    volunteer.setAssignedDepartment(null);
+
+    return volunteerRepo.save(volunteer); 
+}
 
 }

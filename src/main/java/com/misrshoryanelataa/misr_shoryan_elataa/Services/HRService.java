@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class HRService {
-    
+
 
     @Autowired
     InterviewRepo interviewRepo;
@@ -40,28 +40,25 @@ public class HRService {
     @Autowired
     PrRepo prRepo;
 
-    @Autowired
-    LEPRepo lepRepo;
-
     private boolean isAdmin(int hrId) {
         return hrRepo.findById(hrId)
                 .map(hr -> hr.getIsAdmin())
                 .orElse(false);
     }
-// interview,interview slot-----------------
-public void addInterviewSlot(InterviewSlotEntity interviewSlot, int interviewId) {
+    // interview,interview slot-----------------
+    public void addInterviewSlot(InterviewSlotEntity interviewSlot, int interviewId) {
 
-    InterviewEntity interview = interviewRepo.findById(interviewId)
-            .orElseThrow(() -> new RuntimeException("Interview not found"));
+        InterviewEntity interview = interviewRepo.findById(interviewId)
+                .orElseThrow(() -> new RuntimeException("Interview not found"));
 
-    interviewSlot.setInterview(interview);
-    interviewSlot.setStatus(InterviewStatus.AVAILABLE);
-    interviewSlot.setVolunteer(null);
-   
+        interviewSlot.setInterview(interview);
+        interviewSlot.setStatus(InterviewStatus.AVAILABLE);
+        interviewSlot.setVolunteer(null);
 
-    interviewSlotRepo.save(interviewSlot);
-}
-public void createInterview(int hrId, InterviewEntity interview) {
+
+        interviewSlotRepo.save(interviewSlot);
+    }
+    public void createInterview(int hrId, InterviewEntity interview) {
 
         if (!isAdmin(hrId)) {
             throw new RuntimeException("Only admins can create interviews");
@@ -77,12 +74,7 @@ public void createInterview(int hrId, InterviewEntity interview) {
         hrRepo.save(hr);
     }
 
-    public List<InterviewSlotEntity> getAllInterviewSlots(int hrId) {
-
-        if (!isAdmin(hrId)) {
-            throw new RuntimeException("Only admins can get interview slots");
-        }
-
+    public List<InterviewSlotEntity> getAllInterviewSlots() {
         return interviewSlotRepo.findAll();
     }
 
@@ -128,7 +120,7 @@ public void createInterview(int hrId, InterviewEntity interview) {
 
 //------------
 
-// Staff-----------------
+    // Staff-----------------
     public List<? extends StaffEntity> getAllStaff(int hrId) {
         HREntity hr = hrRepo.findById(hrId)
                 .orElseThrow(() -> new RuntimeException("HR not found"));
@@ -159,12 +151,12 @@ public void createInterview(int hrId, InterviewEntity interview) {
         StaffEntity existingStaff = staffRepo.findById(staffId)
                 .orElseThrow(() -> new RuntimeException("Staff not found"));
 
-    if (!requester.getIsAdmin() && existingStaff.getRole() == Role.HR_ADMIN||existingStaff.getRole() == Role.HR_MEMBER) {
+        if (!requester.getIsAdmin() && existingStaff.getRole() == Role.HR_ADMIN||existingStaff.getRole() == Role.HR_MEMBER) {
             throw new RuntimeException("Only admins can update HR");
         }
-       if (staffRepo.existsByEmail(newData.getEmail())) {
-    throw new RuntimeException("Email already exists");
-}
+        if (staffRepo.existsByEmail(newData.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
         existingStaff.setName(newData.getName());
         existingStaff.setEmail(newData.getEmail());
         existingStaff.setRole(newData.getRole());
@@ -172,55 +164,45 @@ public void createInterview(int hrId, InterviewEntity interview) {
         staffRepo.save(existingStaff);
     }
 
-public void createStaff(StaffEntity staff, int hrId) {
+    public void createStaff(StaffEntity staff, int hrId) {
 
-    HREntity requester = hrRepo.findById(hrId)
-            .orElseThrow(() -> new RuntimeException(" HR not found"));
+        HREntity requester = hrRepo.findById(hrId)
+                .orElseThrow(() -> new RuntimeException(" HR not found"));
 
         if (!requester.getIsAdmin() && (staff.getRole() == Role.HR_ADMIN||staff.getRole() == Role.HR_MEMBER)) {
             throw new RuntimeException("Only admins can create HR");
         }
-if (staffRepo.existsByEmail(staff.getEmail())) {
-    throw new RuntimeException("Email already exists");
-}
-if (staff.getRole() == Role.HR_ADMIN || staff.getRole() == Role.HR_MEMBER) {
+        if (staffRepo.existsByEmail(staff.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+        if (staff.getRole() == Role.HR_ADMIN || staff.getRole() == Role.HR_MEMBER) {
 
-    HREntity newHr = new HREntity();
-    newHr.setName(staff.getName());
-    newHr.setEmail(staff.getEmail());
-    newHr.setPassword(staff.getPassword());
-    newHr.setOfficialEmail(staff.getOfficialEmail());
-    newHr.setRole(staff.getRole());
-    newHr.setIsAdmin(staff.getRole() == Role.HR_ADMIN);
+            HREntity newHr = new HREntity();
+            newHr.setName(staff.getName());
+            newHr.setEmail(staff.getEmail());
+            newHr.setPassword(staff.getPassword());
+            newHr.setOfficialEmail(staff.getOfficialEmail());
+            newHr.setRole(staff.getRole());
+            newHr.setIsAdmin(staff.getRole() == Role.HR_ADMIN);
 
-    hrRepo.save(newHr);
-    return;
-}
+            hrRepo.save(newHr);
+            return;
+        }
 
-    if (staff.getRole() == Role.PR_ADMIN) {
-        PREntity newPr = new PREntity();
-        newPr.setName(staff.getName());
-        newPr.setEmail(staff.getEmail());
-        newPr.setPassword(staff.getPassword()); 
-        newPr.setOfficialEmail(staff.getOfficialEmail());
-        newPr.setRole(staff.getRole()); 
-        newPr.setIsAdmin(staff.getRole() == Role.PR_ADMIN); 
-        prRepo.save(newPr);
-        return;
+        if (staff.getRole() == Role.PR_ADMIN) {
+            PREntity newPr = new PREntity();
+            newPr.setName(staff.getName());
+            newPr.setEmail(staff.getEmail());
+            newPr.setPassword(staff.getPassword());
+            newPr.setOfficialEmail(staff.getOfficialEmail());
+            newPr.setRole(staff.getRole());
+            newPr.setIsAdmin(staff.getRole() == Role.PR_ADMIN);
+            prRepo.save(newPr);
+            return;
+        }
+
+        staffRepo.save(staff);
     }
-    if (staff.getRole() == Role.LEP) {
-        LEPEntity lep=new LEPEntity();
-        lep.setName(staff.getName());
-        lep.setEmail(staff.getEmail());
-        lep.setPassword(staff.getPassword());
-        lep.setOfficialEmail(staff.getOfficialEmail());
-        lep.setRole(staff.getRole());
-        lepRepo.save(lep);
-        return;
-    }
-
-    staffRepo.save(staff);
-}
 //-------------------------
 
     public List<VolunteerEntity> getAllVolunteers(int hrId) {
@@ -231,91 +213,91 @@ if (staff.getRole() == Role.HR_ADMIN || staff.getRole() == Role.HR_MEMBER) {
         return volunteerRepo.findAll();
     }
 
-public void assignVolunteerToHR(int assignerHrId, int volunteerId, int targetHrId) {
+    public void assignVolunteerToHR(int assignerHrId, int volunteerId, int targetHrId) {
 
-    HREntity assigner = hrRepo.findById(assignerHrId)
-            .orElseThrow(() -> new RuntimeException("HR not found"));
+        HREntity assigner = hrRepo.findById(assignerHrId)
+                .orElseThrow(() -> new RuntimeException("HR not found"));
 
-    if (!assigner.getIsAdmin()) {
-        throw new RuntimeException("Only admins can assign volunteers");
+        if (!assigner.getIsAdmin()) {
+            throw new RuntimeException("Only admins can assign volunteers");
+        }
+
+        VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
+                .orElseThrow(() -> new RuntimeException("Volunteer not found"));
+
+        HREntity targetHr = hrRepo.findById(targetHrId)
+                .orElseThrow(() -> new RuntimeException("Target HR not found"));
+
+        targetHr.getVolunteers().add(volunteer);
+        volunteer.setHr(targetHr);
+
+        hrRepo.save(targetHr);
+        volunteerRepo.save(volunteer);
     }
 
-    VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
-            .orElseThrow(() -> new RuntimeException("Volunteer not found"));
+    public void sendEmailToVolunteer(int volunteerId, int hrId) {
+        HREntity hr = hrRepo.findById(hrId)
+                .orElseThrow(() -> new RuntimeException("HR not found"));
 
-    HREntity targetHr = hrRepo.findById(targetHrId)
-            .orElseThrow(() -> new RuntimeException("Target HR not found"));
+        VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
+                .orElseThrow(() -> new RuntimeException("Volunteer not found"));
 
-    targetHr.getVolunteers().add(volunteer);
-    volunteer.setHr(targetHr);
+        String toEmail = volunteer.getEmail();
+        String subject = "Update on Your Volunteer Application";
+        String emailContent;
+        Role assignedDepartment = volunteer.getAssignedDepartment();
 
-    hrRepo.save(targetHr);
-    volunteerRepo.save(volunteer);
-}
-
-public void sendEmailToVolunteer(int volunteerId, int hrId) {
-    HREntity hr = hrRepo.findById(hrId)
-            .orElseThrow(() -> new RuntimeException("HR not found"));
-
-    VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
-            .orElseThrow(() -> new RuntimeException("Volunteer not found"));
-
-    String toEmail = volunteer.getEmail();
-    String subject = "Update on Your Volunteer Application";
-    String emailContent;
-    Role assignedDepartment = volunteer.getAssignedDepartment();
-
-    if (volunteer.getStatus() == volunteerStatus.REJECTED) {
-        emailContent = "Dear " + volunteer.getName() +
-                ",\n\nWe regret to inform you that your application has been rejected.";
-
-    } else {
-        if (assignedDepartment == Role.PR_ADMIN ||
-                assignedDepartment == Role.LEP ||
-                assignedDepartment == Role.HR_ADMIN ||
-                assignedDepartment == Role.HR_MEMBER) {
-
-            String cleanName = volunteer.getName().toLowerCase().replaceAll("\\s+", "");
-            String generated;
-
-            do {
-                generated = cleanName
-                        + volunteer.getId()
-                        + new Random().nextInt(1000)
-                        + "@misrshoryanelataa.com";
-            } while (staffRepo.existsByEmail(generated));
-
-            String emailGenerated = generated;
-            String passwordGenerated = UUID.randomUUID().toString().substring(0, 8);
-            StaffEntity staff = new StaffEntity();
-            staff.setName(volunteer.getName());
-            staff.setEmail(volunteer.getEmail());
-            staff.setOfficialEmail(emailGenerated);
-            staff.setPassword(passwordGenerated);
-            staff.setRole(assignedDepartment);
-            staffRepo.save(staff);
-
+        if (volunteer.getStatus() == volunteerStatus.REJECTED) {
             emailContent = "Dear " + volunteer.getName() +
-                    ",\n\nCongratulations! Your application has been accepted.\n" +
-                    "You have been assigned to the " + assignedDepartment + " department.\n\n" +
-                    "Your email is: " + emailGenerated + "\n" +
-                    "Your password is: " + passwordGenerated + "\n\n" +
-                    "Please use these credentials to log in to the volunteer portal.";
+                    ",\n\nWe regret to inform you that your application has been rejected.";
 
         } else {
-            emailContent = "Dear " + volunteer.getName() +
-                    ",\n\nCongratulations! Your application has been accepted.\n" +
-                    "You have been assigned to the " + assignedDepartment + " department.\n\n";
-        }
-    }
+            if (assignedDepartment == Role.PR_ADMIN ||
+                    assignedDepartment == Role.LEP ||
+                    assignedDepartment == Role.HR_ADMIN ||
+                    assignedDepartment == Role.HR_MEMBER) {
 
-    SimpleMailMessage message = new SimpleMailMessage();
-    message.setTo(toEmail);
-    message.setSubject(subject);
-    message.setText(emailContent);
-    message.setFrom("misrshoryanelataa@gmail.com");
-    mailSender.send(message);
-}
+                String cleanName = volunteer.getName().toLowerCase().replaceAll("\\s+", "");
+                String generated;
+
+                do {
+                    generated = cleanName
+                            + volunteer.getId()
+                            + new Random().nextInt(1000)
+                            + "@misrshoryanelataa.com";
+                } while (staffRepo.existsByEmail(generated));
+
+                String emailGenerated = generated;
+                String passwordGenerated = UUID.randomUUID().toString().substring(0, 8);
+                StaffEntity staff = new StaffEntity();
+                staff.setName(volunteer.getName());
+                staff.setEmail(volunteer.getEmail());
+                staff.setOfficialEmail(emailGenerated);
+                staff.setPassword(passwordGenerated);
+                staff.setRole(assignedDepartment);
+                staffRepo.save(staff);
+
+                emailContent = "Dear " + volunteer.getName() +
+                        ",\n\nCongratulations! Your application has been accepted.\n" +
+                        "You have been assigned to the " + assignedDepartment + " department.\n\n" +
+                        "Your email is: " + emailGenerated + "\n" +
+                        "Your password is: " + passwordGenerated + "\n\n" +
+                        "Please use these credentials to log in to the volunteer portal.";
+
+            } else {
+                emailContent = "Dear " + volunteer.getName() +
+                        ",\n\nCongratulations! Your application has been accepted.\n" +
+                        "You have been assigned to the " + assignedDepartment + " department.\n\n";
+            }
+        }
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject(subject);
+        message.setText(emailContent);
+        message.setFrom("misrshoryanelataa@gmail.com");
+        mailSender.send(message);
+    }
     public List<VolunteerEntity> getVolunteersAssignedToHR(int hrId) {
         HREntity hr = hrRepo.findById(hrId)
                 .orElseThrow(() -> new RuntimeException("HR not found"));
@@ -324,18 +306,18 @@ public void sendEmailToVolunteer(int volunteerId, int hrId) {
                 .collect(Collectors.toList());
     }
 
-public void acceptVolunteer(int volunteerId, int hrId, Role assignedDepartment) {
-    HREntity hr = hrRepo.findById(hrId)
-            .orElseThrow(() -> new RuntimeException("HR not found"));
+    public void acceptVolunteer(int volunteerId, int hrId, Role assignedDepartment) {
+        HREntity hr = hrRepo.findById(hrId)
+                .orElseThrow(() -> new RuntimeException("HR not found"));
 
-    VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
-            .orElseThrow(() -> new RuntimeException("Volunteer not found"));
+        VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
+                .orElseThrow(() -> new RuntimeException("Volunteer not found"));
 
-    volunteer.setStatus(volunteerStatus.ACCEPTED);
-    volunteer.setAssignedDepartment(assignedDepartment);
-    volunteerRepo.save(volunteer);
-    sendEmailToVolunteer(volunteerId, hrId);
-}
+        volunteer.setStatus(volunteerStatus.ACCEPTED);
+        volunteer.setAssignedDepartment(assignedDepartment);
+        volunteerRepo.save(volunteer);
+        sendEmailToVolunteer(volunteerId, hrId);
+    }
 
     public void chooseDepartmentForVolunteer(int volunteerId, int hrId, Role department) {
         HREntity hr = hrRepo.findById(hrId)
@@ -353,20 +335,20 @@ public void acceptVolunteer(int volunteerId, int hrId, Role assignedDepartment) 
         }
     }
 
-public void rejectVolunteer(int volunteerId, int hrId) {
-    HREntity hr = hrRepo.findById(hrId)
-            .orElseThrow(() -> new RuntimeException("HR not found"));
+    public void rejectVolunteer(int volunteerId, int hrId) {
+        HREntity hr = hrRepo.findById(hrId)
+                .orElseThrow(() -> new RuntimeException("HR not found"));
 
-    VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
-            .orElseThrow(() -> new RuntimeException("Volunteer not found"));
+        VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
+                .orElseThrow(() -> new RuntimeException("Volunteer not found"));
 
-    volunteer.setStatus(volunteerStatus.REJECTED);
-    volunteerRepo.save(volunteer);
+        volunteer.setStatus(volunteerStatus.REJECTED);
+        volunteerRepo.save(volunteer);
 
-    if (!hr.getIsAdmin()) {
-        sendEmailToVolunteer(volunteerId, hrId);
-        interviewSlotRepo.clearVolunteerReference(volunteerId);
-        volunteerRepo.delete(volunteer);
+        if (!hr.getIsAdmin()) {
+            sendEmailToVolunteer(volunteerId, hrId);
+            interviewSlotRepo.clearVolunteerReference(volunteerId);
+            volunteerRepo.delete(volunteer);
+        }
     }
-}
 }

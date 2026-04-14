@@ -2,18 +2,19 @@ package com.misrshoryanelataa.misr_shoryan_elataa.Controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.misrshoryanelataa.misr_shoryan_elataa.Models.InterviewEntity;
+
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.InterviewSlotEntity;
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.VolunteerEntity;
 import com.misrshoryanelataa.misr_shoryan_elataa.Services.VolunteerService;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -42,18 +43,17 @@ public class VolunteerController {
         return volunteerService.chooseInterviewSlot(slot,volunteerId);
     }
 
-    @PostMapping("/create-volunteer")
-    public ResponseEntity<String> createVolunteer(@RequestBody VolunteerEntity volunteer) {
-            try {
-       volunteerService.createVolunteer(volunteer);
-        return ResponseEntity.ok("Volunteer created successfully");
-
+@PostMapping("/create-volunteer")
+public ResponseEntity<?> createVolunteer(@RequestBody VolunteerEntity volunteer) {
+    try {
+        VolunteerEntity saved = volunteerService.createVolunteer(volunteer);
+        return ResponseEntity.ok(saved);
     } catch (RuntimeException ex) {
         return ResponseEntity
                 .badRequest()
-                .body(ex.getMessage());
+                .body(Map.of("message", ex.getMessage()));
     }
-    }
+}
+}
 
     
-}

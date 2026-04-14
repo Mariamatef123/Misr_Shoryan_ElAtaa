@@ -1,5 +1,7 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Models;
 import com.misrshoryanelataa.misr_shoryan_elataa.Enums.Role;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -9,14 +11,15 @@ public class StaffEntity extends UserEntity {
     @Enumerated(EnumType.STRING)
     Role role;
 
-    String OfficialEmail;
-
+   @Column(name = "OfficialEmail")
+    String officialEmail;
+   
     public void setOfficialEmail(String officialEmail) {
-        OfficialEmail = officialEmail;
+        officialEmail = officialEmail;
     }
 
     public String getOfficialEmail() {
-        return OfficialEmail;
+        return officialEmail;
     }
 
     public void setRole(Role role) {
