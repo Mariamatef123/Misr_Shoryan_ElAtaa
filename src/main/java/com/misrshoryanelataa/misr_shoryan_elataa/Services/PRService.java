@@ -66,6 +66,7 @@ public class PRService {
                     existingCampaign.setDescription(campaign.getDescription());
                     existingCampaign.setLocation(campaign.getLocation());
                     existingCampaign.setIsActivated(campaign.getIsActivated());
+                    existingCampaign.setTitle(campaign.getTitle());
                     campaignRepo.save(existingCampaign);
                     prRepo.save(existingCampaign.getPr());
                 });
@@ -81,6 +82,7 @@ public void sendEmailToUsers(CampaignEntity campaign) {
                 existingCampaign.setDescription(campaign.getDescription());
                 existingCampaign.setLocation(campaign.getLocation());
                 existingCampaign.setIsActivated(campaign.getIsActivated());
+                existingCampaign.setTitle(campaign.getTitle());
                 campaignRepo.save(existingCampaign);
                 prRepo.save(existingCampaign.getPr());
             });

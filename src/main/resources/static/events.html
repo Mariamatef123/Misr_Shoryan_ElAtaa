@@ -4,7 +4,16 @@
     <meta charset="UTF-8" />
     <title>الفعاليات</title>
     <link rel="stylesheet" href="CSS/style.css" />
+    <style>
+      .campaign-card {
+        background: #fff5f5;
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+      }
+    </style>
   </head>
+
   <body>
     <nav class="navbar">
       <div class="logo-container">
@@ -22,50 +31,53 @@
         <img height="200px" src="Images/event2.jpg" class="grid-img" />
         <img height="200px" src="Images/event3.jpg" class="grid-img" />
       </div>
-      <div
-        style="
-          background: #fff5f5;
-          padding: 20px;
-          border-radius: 15px;
-          margin-bottom: 20px;
-        "
-      >
-        <h3>حملة جامعة عين شمس القادمة</h3>
-        <p>الموعد: 20 أبريل 2026 | المكان: ساحة كلية الطب</p>
-      </div>
-      <div
-        style="
-          background: #fff5f5;
-          padding: 20px;
-          border-radius: 15px;
-          margin-bottom: 20px;
-        "
-      >
-        <h3>حملة التبرع بنادي الصيد</h3>
-        <p>الموعد: 25 أبريل 2026 | المكان: البوابة الرئيسية - منطقة الملاعب</p>
-      </div>
-      <div
-        style="
-          background: #fff5f5;
-          padding: 20px;
-          border-radius: 15px;
-          margin-bottom: 20px;
-        "
-      >
-        <h3>ندوة التوعية بمركز التدريب بالقصر العيني</h3>
-        <p>الموعد: 1 مايو 2026 | المكان: قاعة المؤتمرات الكبرى</p>
-      </div>
-      <div
-        style="
-          background: #fff5f5;
-          padding: 20px;
-          border-radius: 15px;
-          margin-bottom: 20px;
-        "
-      >
-        <h3>قافلة "شريان" بمحافظة الإسكندرية</h3>
-        <p>الموعد: 10 مايو 2026 | المكان: مكتبة الإسكندرية - الساحة الخارجية</p>
-      </div>
+      <div id="campaigns-container" class="campaigns-container"></div>
     </div>
+    <script>
+      async function showEventDetails() {
+        try {
+          const res = await fetch("http://localhost:9090/campaigns");
+
+          if (!res.ok) throw new Error("Failed to fetch campaigns");
+
+          const campaigns = await res.json();
+
+          const container = document.getElementById("campaigns-container");
+          container.innerHTML = "";
+
+          campaigns
+            .filter((c) => c.isActivated)
+            .forEach((campaign) => {
+              const div = document.createElement("div");
+              div.classList.add("campaign-card");
+
+              const formattedDate = new Date(campaign.date).toLocaleDateString(
+                "ar-EG",
+                {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                },
+              );
+
+              div.innerHTML = `
+            <b>${campaign.title}</b>
+            <p>${campaign.description}</p>
+            <p>
+              📅 ${formattedDate} <br>
+              📍 ${campaign.location}
+            </p>
+           
+          `;
+
+              container.appendChild(div);
+            });
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      showEventDetails();
+    </script>
   </body>
 </html>

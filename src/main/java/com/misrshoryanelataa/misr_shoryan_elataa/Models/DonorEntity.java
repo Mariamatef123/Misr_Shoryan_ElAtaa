@@ -14,12 +14,17 @@ public class DonorEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String name;
 
+    @Column(columnDefinition = "NVARCHAR(255)")
     @Email
     private String email;
+    
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String phone;
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String city;
     private int age;
     private Date checkUP;

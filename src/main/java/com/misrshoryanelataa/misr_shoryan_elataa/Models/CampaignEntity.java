@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,7 +26,12 @@ public class CampaignEntity {
     @JoinColumn(name = "pr_id")
     private PREntity pr;
 
+
+    @Column(columnDefinition = "NVARCHAR(255)")
+    String title;
+    @Column(columnDefinition = "NVARCHAR(255)")
     String location;
+    @Column(columnDefinition = "NVARCHAR(255)")
     String description;
     boolean isActivated;
 
@@ -33,6 +39,12 @@ public class CampaignEntity {
         this.pr = pr;
     }
     
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public String getTitle() {
+        return title;
+    }
     public PREntity getPr() {
         return pr;
     }

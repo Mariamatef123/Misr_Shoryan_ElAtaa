@@ -68,6 +68,7 @@ public VolunteerEntity createVolunteer(VolunteerEntity volunteer) {
 
     volunteer.setAssignedDepartment(null);
 
+    
     return volunteerRepo.save(volunteer); 
 }
 

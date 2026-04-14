@@ -24,4 +24,9 @@ public class MedicalValuesController {
     public List<String> getQuestionTitles() {
         return medService.getAllQuestionTitles();
     }
+
+        @GetMapping("/questions")
+    public Object getQuestion() {
+        return medService.getAllQuestion();
+    }
 }

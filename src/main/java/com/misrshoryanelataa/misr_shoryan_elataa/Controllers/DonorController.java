@@ -53,6 +53,14 @@ public class DonorController {
         return donorService.deleteDonor(id);
     }
 
+   @GetMapping("/donorTypes")
+    public Object getDonorTypes() {
+        return donorService.getDonorTypes();
+    }
 
+    @GetMapping("/BloodTypes")
+    public Object getBloodTypes() {
+        return donorService.getBloodTypes();
+    }
 }
 

@@ -26,6 +26,22 @@ public class MedicalValuesService {
                 parentAnswer.equalsIgnoreCase("Yes");
     }
 
+    private String convertArabicToWestern(String input) {
+    if (input == null) return null;
+    StringBuilder sb = new StringBuilder();
+    for (char c : input.toCharArray()) {
+        if (c >= '\u0660' && c <= '\u0669') {
+            // Arabic-Indic digits ٠١٢٣٤٥٦٧٨٩
+            sb.append((char) (c - '\u0660' + '0'));
+        } else if (c >= '\u06F0' && c <= '\u06F9') {
+            // Extended Persian digits ۰۱۲۳۴۵۶۷۸۹
+            sb.append((char) (c - '\u06F0' + '0'));
+        } else {
+            sb.append(c);
+        }
+    }
+    return sb.toString();
+}
     public ValidationResponse validate(Map<Integer, String> answers) {
 
         List<MedicalValuesEntity> questions =
@@ -45,28 +61,23 @@ public class MedicalValuesService {
 
             switch (q.getType()) {
 
-                case NUMBER:
-
-                    try {
-                        double value = Double.parseDouble(answer);
-
-                        if (q.getMinValue() != null && value < q.getMinValue()) {
-                            return new ValidationResponse(false,
-                                    "You are not eligible because you didn't match the donation criteria");
-                        }
-
-                        if (q.getMaxValue() != null && value > q.getMaxValue()) {
-                            return new ValidationResponse(false,
-                                    "You are not eligible because you didn't match the donation criteria");
-                        }
-
-                    } catch (NumberFormatException e) {
-                        return new ValidationResponse(false,
-                                q.getTitle() + " must be a number");
-                    }
-
-                    break;
-
+              case NUMBER:
+    try {
+        String normalizedAnswer = convertArabicToWestern(answer);
+        double value = Double.parseDouble(normalizedAnswer);
+        if (q.getMinValue() != null && value < q.getMinValue()) {
+            return new ValidationResponse(false,
+                    "You are not eligible because you didn't match the donation criteria");
+        }
+        if (q.getMaxValue() != null && value > q.getMaxValue()) {
+            return new ValidationResponse(false,
+                    "You are not eligible because you didn't match the donation criteria");
+        }
+    } catch (NumberFormatException e) {
+        return new ValidationResponse(false,
+                q.getTitle() + " must be a number");
+    }
+    break;
                 case YES_NO:
 
 
@@ -95,6 +106,12 @@ public class MedicalValuesService {
         return medRepo.findAll(Sort.by("id"))
                 .stream()
                 .map(MedicalValuesEntity::getTitle)
+                .toList();
+    }
+
+    public Object getAllQuestion() {
+             return medRepo.findAll(Sort.by("id"))
+                .stream()
                 .toList();
     }
 }

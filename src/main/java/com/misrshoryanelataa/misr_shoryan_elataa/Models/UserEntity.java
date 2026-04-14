@@ -1,4 +1,5 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Models;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,6 +18,7 @@ public class UserEntity {
     @Email
     String email;
 
+    String phone;
     String name;
     String password;
 
@@ -51,4 +53,10 @@ public class UserEntity {
     public String getPassword() {
         return password;
     }
+ public void setPhone(String phone) {
+     this.phone = phone;
+ }
+ public String getPhoneNumber() {
+     return phone;
+ }
 }

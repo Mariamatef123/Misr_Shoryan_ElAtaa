@@ -67,5 +67,12 @@ public class DonorService {
             return e.getMessage();
         }
     }
+    public Object getDonorTypes() {
+       return List.of(DonationType.values());
+    }
+    public Object getBloodTypes() {
+        return List.of(BloodType.values());
+    }
+
     
 }

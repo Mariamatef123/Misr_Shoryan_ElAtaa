@@ -9,6 +9,7 @@ public class MedicalValuesEntity {
 
     @Id
     private Integer id;
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String title;
     @Enumerated(EnumType.STRING)
     @Column(name = "type")

@@ -11,7 +11,8 @@ public class ChildEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    
+    
     private String name;
     private int age;
     private int parentNumber;

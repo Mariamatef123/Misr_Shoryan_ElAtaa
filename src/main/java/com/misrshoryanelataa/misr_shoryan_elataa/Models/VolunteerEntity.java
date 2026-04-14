@@ -23,8 +23,7 @@ public class VolunteerEntity extends UserEntity {
     String universityEmail;
 
 
-
-
+    
 @JsonManagedReference
 @ManyToOne(fetch = FetchType.EAGER)
 @JoinColumn(name = "hr_id")

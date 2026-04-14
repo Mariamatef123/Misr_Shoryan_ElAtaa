@@ -166,6 +166,7 @@ public class HRService {
         existingStaff.setName(newData.getName());
         existingStaff.setEmail(newData.getEmail());
         existingStaff.setRole(newData.getRole());
+          existingStaff.setPhoneNumber(newData.getPhoneNumber());
         existingStaff.setPassword(newData.getPassword());
         staffRepo.save(existingStaff);
     }
@@ -185,6 +186,7 @@ public class HRService {
 
             HREntity newHr = new HREntity();
             newHr.setName(staff.getName());
+            newHr.setPhoneNumber(staff.getPhoneNumber());
             newHr.setEmail(staff.getEmail());
             newHr.setPassword(staff.getPassword());
             newHr.setOfficialEmail(staff.getOfficialEmail());
@@ -200,6 +202,7 @@ public class HRService {
             newPr.setName(staff.getName());
             newPr.setEmail(staff.getEmail());
             newPr.setPassword(staff.getPassword());
+            newPr.setPhoneNumber(staff.getPhoneNumber());
             newPr.setOfficialEmail(staff.getOfficialEmail());
             newPr.setRole(staff.getRole());
             newPr.setIsAdmin(staff.getRole() == Role.PR_ADMIN);
