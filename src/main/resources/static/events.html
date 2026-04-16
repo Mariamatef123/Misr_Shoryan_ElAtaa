@@ -7,9 +7,9 @@
     <style>
       .campaign-card {
         background: #fff5f5;
-        padding: 20px;
-        border-radius: 15px;
-        margin-bottom: 20px;
+        padding: 15px; 
+        border-radius: 12px;
+        margin-bottom: 15px;
       }
     </style>
   </head>
@@ -17,19 +17,17 @@
   <body>
     <nav class="navbar">
       <div class="logo-container">
-        <img src="Images/logo.jpg" style="height: 50px" />
+        <img src="Images/logo.jpg" style="height: 45px" /> </div>
         <!-- <h1 class="hadeer">شريان العطاء</h1> -->
         <!-- <span class="heart-icon">❤️</span> -->
-      </div>
       <a href="index.html" class="nav-item">الرئيسية</a>
     </nav>
     <div class="content-box">
       <h1>الفعاليات القادمة</h1>
       <p>حملاتنا تجوب المحافظات والجامعات لنشر الوعي وسد احتياجات المرضى.</p>
       <div class="images-grid-3">
-        <img height="200px" src="Images/event1.jpg" class="grid-img" />
-        <img height="200px" src="Images/event2.jpg" class="grid-img" />
-        <img height="200px" src="Images/event3.jpg" class="grid-img" />
+        <img height="160px" src="Images/event1.jpg" class="grid-img" /> <img height="160px" src="Images/event2.jpg" class="grid-img" />
+        <img height="160px" src="Images/event3.jpg" class="grid-img" />
       </div>
       <div id="campaigns-container" class="campaigns-container"></div>
     </div>
@@ -61,13 +59,13 @@
               );
 
               div.innerHTML = `
-            <b>${campaign.title}</b>
-            <p>${campaign.description}</p>
-            <p>
+            <b style="font-size: 16px;">${campaign.title}</b>
+            <p style="font-size: 14px;">${campaign.description}</p>
+            <p style="font-size: 13px;">
               📅 ${formattedDate} <br>
               📍 ${campaign.location}
             </p>
-           
+            
           `;
 
               container.appendChild(div);
