@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.CampaignEntity;
@@ -21,8 +22,8 @@ public class PRController {
     @Autowired
     private PRService PRService;
 
-    @PostMapping("/campaigns/{prId}")
-    public PREntity createCampaign(@RequestBody CampaignEntity campaign,@PathVariable int prId) {
+    @PostMapping("/campaigns")
+    public PREntity createCampaign(@RequestBody CampaignEntity campaign,@RequestParam int prId) {
         return PRService.createCampaign(campaign, prId);
     }
 
@@ -42,8 +43,12 @@ public class PRController {
     }
 
     @PostMapping("send-email-to-users")
-    public void sendEmailToUsers(@RequestBody CampaignEntity campaign) {
-        PRService.sendEmailToUsers(campaign);
+    public void sendEmailToUsers(@RequestBody CampaignEntity campaign,String state) {
+        PRService.sendEmailToUsers(campaign,state);
     }
 
+    @GetMapping("/campaigns/{id}")
+    public CampaignEntity getCampaignById(@PathVariable int id) {
+        return PRService.getCampaignById(id);
+    }
 }

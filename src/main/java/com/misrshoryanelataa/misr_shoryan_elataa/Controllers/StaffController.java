@@ -21,7 +21,7 @@ public class StaffController {
     @Autowired
     private LoginRateLimiter rateLimiter;
 @PostMapping("/login")
-public ResponseEntity<String> login(
+public ResponseEntity<Object> login(
         @RequestBody LoginDto loginRequest,
         HttpServletRequest request) {
 
@@ -34,7 +34,7 @@ public ResponseEntity<String> login(
                 .body("تم الحظر مؤقتاً. حاول بعد " + minutes + " دقيقة.");
     }
 
-    ResponseEntity<String> result = staffService.login(
+    ResponseEntity<Object> result = staffService.login(
             loginRequest.getOfficialEmail(),
             loginRequest.getPassword()
     );

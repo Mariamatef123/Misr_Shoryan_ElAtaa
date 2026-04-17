@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HR Member Dashboard</title>
+    <link rel="stylesheet" href="CSS/style1.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-brand">
+          <p class="sidebar-eyebrow">HR Member</p>
+          <h1>Team Control</h1>
+          <p>
+            Review volunteers, assign departments, and manage staff records.
+          </p>
+        </div>
+
+        <nav class="sidebar-nav">
+          <button class="nav-link active" type="button" data-page="pending">
+            Pending
+          </button>
+
+          <button class="nav-link" type="button" data-page="staff">
+            Staff
+          </button>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="page-header">
+          <div>
+            <p class="eyebrow">HR Workspace</p>
+            <h2 id="page-title">Pending Volunteers</h2>
+            <p id="page-subtitle" class="page-subtitle">
+              Review volunteer requests and decide who joins the team.
+            </p>
+          </div>
+        </header>
+
+        <section class="summary-grid">
+          <article class="summary-card">
+            <span class="summary-label">Pending Requests</span>
+            <strong id="pending-count">0</strong>
+          </article>
+
+          <article class="summary-card">
+            <span class="summary-label">Staff Members</span>
+            <strong id="staff-count">0</strong>
+          </article>
+        </section>
+
+        <section class="panel active" id="pendingPage">
+          <div class="panel-header">
+            <div>
+              <h3>Pending Volunteers</h3>
+              <p>
+                Accept or reject applications, and choose the department before
+                approval.
+              </p>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Assign Department</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="pendingTable"></tbody>
+            </table>
+            <div class="empty-state" id="pending-empty">
+              <h3>No pending volunteers</h3>
+              <p>All requests are processed right now.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="staffPage">
+          <div class="panel-header">
+            <div>
+              <h3>Staff Members</h3>
+              <p>Update or delete staff entries from this page.</p>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Department</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="staffTable"></tbody>
+            </table>
+            <div class="empty-state" id="staff-empty">
+              <h3>No staff members found</h3>
+              <p>Add staff data later if needed.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="JS/script1.js"></script>
+  </body>
+</html>

@@ -31,9 +31,8 @@ public class PRService {
         pr.setCampaign(campaign);
         campaign.setPr(pr);
         campaignRepo.save(campaign);
-        sendEmailToUsers(campaign);
+        new Thread(() -> sendEmailToUsers(campaign, "new")).start();
         return prRepo.save(pr);
-
     }
 
     public List<CampaignEntity> getAllCampaigns() {
@@ -70,9 +69,11 @@ public class PRService {
                     campaignRepo.save(existingCampaign);
                     prRepo.save(existingCampaign.getPr());
                 });
+       
     }
 
-public void sendEmailToUsers(CampaignEntity campaign) {
+public void sendEmailToUsers(CampaignEntity campaign, String state) {
+   
     prRepo.findAll().stream()
             .flatMap(pr -> pr.getCampaigns().stream())
             .filter(c -> c.getId() == campaign.getId())
@@ -89,23 +90,38 @@ public void sendEmailToUsers(CampaignEntity campaign) {
 
     userRepo.findAll().forEach(user -> {
         if (user.getEmail() == null || user.getEmail().isBlank()) return;
-
-        String body = "Dear " + user.getName() + ",\n\n" +
-                "We would like to inform you about the latest updates on our campaigns.\n\n" +
+  String body;
+if(state.equals("update")) {
+     body = "Dear " + user.getName() + ",\n\n" +
+                "We would like to inform you about the updates on our campaign.\n\n" +
                 "Description: " + campaign.getDescription() + "\n" +
                 "Location: " + campaign.getLocation() + "\n" +
                 "Date: " + campaign.getDate() + "\n\n" +
                 "Please visit our website for more details.\n\n" +
                 "Best regards,\n" +
                 "Misr Shoryan Elataa Team";
-
+}
+else {
+        body = "Dear " + user.getName() + ",\n\n" +
+                "We would like to inform you about the new campaign.\n\n" +
+                "Description: " + campaign.getDescription() + "\n" +
+                "Location: " + campaign.getLocation() + "\n" +
+                "Date: " + campaign.getDate() + "\n\n" +
+                "Please visit our website for more details.\n\n" +
+                "Best regards,\n" +
+                "Misr Shoryan Elataa Team";
+}
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());
         message.setFrom("misrshoryanelataa@gmail.com");
-        message.setSubject("Update on Campaigns");
+      message.setSubject(state.equals("update") ? "Campaign Updated" : "New Campaign");
         message.setText(body);
 
         mailSender.send(message);
     });
+}
+
+public CampaignEntity getCampaignById(int id) {
+    return campaignRepo.findById(id).orElseThrow(() -> new RuntimeException("Campaign not found"));
 }
 }

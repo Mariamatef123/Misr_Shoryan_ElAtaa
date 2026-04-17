@@ -15,7 +15,7 @@ public class StaffEntity extends UserEntity {
     String officialEmail;
    
     public void setOfficialEmail(String officialEmail) {
-        officialEmail = officialEmail;
+        this.officialEmail = officialEmail;
     }
 
     public String getOfficialEmail() {

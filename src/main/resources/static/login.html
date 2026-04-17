@@ -221,21 +221,42 @@
             body: JSON.stringify({ officialEmail: email, password }),
           });
 
-          const message = await response.text();
+          const data = await response.json().catch(() => null);
+
+          const user = {
+            id: data?.id,
+            name: data?.name,
+            email: data?.email,
+            role: data?.role,
+            phone: data?.phone,
+          };
+
+          localStorage.setItem("user", JSON.stringify(user));
 
           if (response.ok) {
             clearBlockStorage();
 
             showAlert("success", "نجاح", "تم تسجيل الدخول", "OK", () => {
-              window.location.href = "index.html";
+              const id = user.id;
+
+              if (user.role === "HR_ADMIN") {
+                window.location.href = `hrAdmin.html?hrId=${id}`;
+              } else if (user.role === "PR_ADMIN") {
+                window.location.href = `prAdmin.html?prId=${id}`;
+              } else if (user.role === "HR_MEMBER") {
+                window.location.href = `hrMember.html?hrId=${id}`;
+              } else if (user.role === "PR_MEMBER") {
+                window.location.href = `prMember.html?prId=${id}`;
+              } else if (user.role === "LEP") {
+                window.location.href = `lep.html?lepId=${id}`;
+              }
             });
+
             return;
           }
 
           if (response.status === 429) {
-            showAlert("error", "محظور", message, "حسناً");
-
-            isBlocked = true;
+            showAlert("error", "محظور", await response.text(), "حسناً");
 
             localStorage.setItem("isBlocked", "true");
             localStorage.setItem("blockedEmail", email);
@@ -245,7 +266,7 @@
           }
 
           errorMessage.style.display = "block";
-          showAlert("error", "خطأ", message, "حاول مجدداً");
+          showAlert("error", "خطأ", await response.text(), "حاول مجدداً");
         } catch (error) {
           showAlert("error", "خطأ", "تعذر الاتصال بالسيرفر", "إغلاق");
         }
