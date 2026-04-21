@@ -31,7 +31,7 @@ public class PRService {
         pr.setCampaign(campaign);
         campaign.setPr(pr);
         campaignRepo.save(campaign);
-        new Thread(() -> sendEmailToUsers(campaign, "new")).start();
+      sendEmailToUsers(campaign, "new");
         return prRepo.save(pr);
     }
 
@@ -61,6 +61,7 @@ public class PRService {
                 .filter(c -> c.getId() == id)
                 .findFirst()
                 .ifPresent(existingCampaign -> {
+                    existingCampaign.setTitle(campaign.getTitle());
                     existingCampaign.setDate(campaign.getDate());
                     existingCampaign.setDescription(campaign.getDescription());
                     existingCampaign.setLocation(campaign.getLocation());
@@ -69,6 +70,7 @@ public class PRService {
                     campaignRepo.save(existingCampaign);
                     prRepo.save(existingCampaign.getPr());
                 });
+                 sendEmailToUsers(campaign, "update");
        
     }
 
@@ -79,6 +81,7 @@ public void sendEmailToUsers(CampaignEntity campaign, String state) {
             .filter(c -> c.getId() == campaign.getId())
             .findFirst()
             .ifPresent(existingCampaign -> {
+                existingCampaign.setTitle(campaign.getTitle());
                 existingCampaign.setDate(campaign.getDate());
                 existingCampaign.setDescription(campaign.getDescription());
                 existingCampaign.setLocation(campaign.getLocation());
@@ -94,6 +97,7 @@ public void sendEmailToUsers(CampaignEntity campaign, String state) {
 if(state.equals("update")) {
      body = "Dear " + user.getName() + ",\n\n" +
                 "We would like to inform you about the updates on our campaign.\n\n" +
+                 "Title: " + campaign.getTitle() + "\n" +
                 "Description: " + campaign.getDescription() + "\n" +
                 "Location: " + campaign.getLocation() + "\n" +
                 "Date: " + campaign.getDate() + "\n\n" +
@@ -104,6 +108,7 @@ if(state.equals("update")) {
 else {
         body = "Dear " + user.getName() + ",\n\n" +
                 "We would like to inform you about the new campaign.\n\n" +
+                "Title: " + campaign.getTitle() + "\n" +
                 "Description: " + campaign.getDescription() + "\n" +
                 "Location: " + campaign.getLocation() + "\n" +
                 "Date: " + campaign.getDate() + "\n\n" +

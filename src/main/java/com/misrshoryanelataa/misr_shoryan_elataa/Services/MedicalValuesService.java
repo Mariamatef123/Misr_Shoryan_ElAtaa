@@ -67,11 +67,11 @@ public class MedicalValuesService {
         double value = Double.parseDouble(normalizedAnswer);
         if (q.getMinValue() != null && value < q.getMinValue()) {
             return new ValidationResponse(false,
-                    "You are not eligible because you didn't match the donation criteria");
+                    "نأسف، لا يمكنك التبرع حالياً لأنك لا تستوفي شروط التبرع.");
         }
         if (q.getMaxValue() != null && value > q.getMaxValue()) {
             return new ValidationResponse(false,
-                    "You are not eligible because you didn't match the donation criteria");
+                    "نأسف، لا يمكنك التبرع حالياً لأنك لا تستوفي شروط التبرع.");
         }
     } catch (NumberFormatException e) {
         return new ValidationResponse(false,
@@ -91,7 +91,7 @@ public class MedicalValuesService {
                             Boolean.TRUE.equals(q.getYesIsInvalid())) {
 
                         return new ValidationResponse(false,
-                                "You are not eligible because you didn't match the donation criteria");
+                                "نأسف، لا يمكنك التبرع حالياً لأنك لا تستوفي شروط التبرع.");
                     }
 
                     break;
