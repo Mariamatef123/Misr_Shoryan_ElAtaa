@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 
 import java.util.List;
 
 @Entity
+@PrimaryKeyJoinColumn(name = "id")
 public class LEPEntity extends StaffEntity{
     public LEPEntity() {
 

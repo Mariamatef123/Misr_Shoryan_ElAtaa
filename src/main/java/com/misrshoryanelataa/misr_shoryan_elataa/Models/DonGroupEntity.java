@@ -26,9 +26,8 @@ public class DonGroupEntity {
     private LEPEntity lep;
 
     @JsonManagedReference("group-donors")
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DonorEntity> donors;
-
+    @OneToMany(mappedBy = "group", cascade = CascadeType.MERGE)
+private List<DonorEntity> donors;
     public LocalDate getLastRotationDate() {
         return lastRotationDate;
     }

@@ -1,10 +1,12 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Controllers;
 
+import com.misrshoryanelataa.misr_shoryan_elataa.Enums.DonationType;
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.DonorEntity;
 import com.misrshoryanelataa.misr_shoryan_elataa.Services.DonorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 public class DonorController {
@@ -25,7 +27,7 @@ public class DonorController {
         }
     }
 
-    @GetMapping("/donor/id/{id}")
+    @GetMapping("/donor/{id}")
     public Object getDonorById(@PathVariable int id) {
         return donorService.getDonorById(id);
     }
@@ -51,6 +53,13 @@ public class DonorController {
     public Object deleteDonor(@PathVariable int id) {
 
         return donorService.deleteDonor(id);
+    }
+
+    @PutMapping("update-donor-status/{id}")
+    public Object updateDonorStatus(@PathVariable int id, @RequestBody DonationType type) {
+     
+        
+        return donorService.updateDonorStatus(id,type);
     }
 
    @GetMapping("/donorTypes")

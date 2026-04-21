@@ -1,5 +1,7 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Controllers;
 
+import com.misrshoryanelataa.misr_shoryan_elataa.DTO.DonorGroupDTO;
+import com.misrshoryanelataa.misr_shoryan_elataa.Enums.volunteerStatus;
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.ChildEntity;
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.DonGroupEntity;
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.DonorEntity;
@@ -11,7 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
 import java.util.List;
+
 
 @RestController
 public class LEPController {
@@ -22,15 +26,12 @@ public class LEPController {
     private DonGroupRepo donGroupRepo;
 
     @PostMapping("/child/{lepId}")
-    public Object createChild(@RequestBody ChildEntity child,@PathVariable int lepId) {
+    public Object createChild(@RequestBody ChildEntity child, @PathVariable int lepId) {
         try {
             lepService.createChild(child, lepId);
-            return ResponseEntity.ok("child is created successfully");
-
+            return ResponseEntity.ok(child);
         } catch (RuntimeException ex) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(ex.getMessage());
+            return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
 
@@ -38,14 +39,13 @@ public class LEPController {
     public Object getChildById(@PathVariable int id) {
         return lepService.getChildById(id);
     }
-//    @GetMapping("/child/all")
-//    public List<ChildEntity> getAllChildren() {
-//        return lepService.getAllChildren();
-//    }
-    
+    // @GetMapping("/child/all")
+    // public List<ChildEntity> getAllChildren() {
+    // return lepService.getAllChildren();
+    // }
 
     @PutMapping("/child/{id}/{lepId}")
-    public Object updateChild(@PathVariable int id, @RequestBody ChildEntity child,@PathVariable int lepId) {
+    public Object updateChild(@PathVariable int id, @RequestBody ChildEntity child, @PathVariable int lepId) {
         return lepService.updateChild(id, child, lepId);
     }
 
@@ -54,6 +54,7 @@ public class LEPController {
 
         return lepService.deleteChild(id);
     }
+
     @GetMapping("child/{lepId}")
     public List<ChildEntity> getChildren(@PathVariable int lepId) {
         List<ChildEntity> children = lepService.getChildrenForLep(lepId);
@@ -71,8 +72,7 @@ public class LEPController {
             @RequestBody List<Integer> donorIds) {
 
         return ResponseEntity.ok(
-                lepService.createGroup(childId, donorIds)
-        );
+                lepService.createGroup(childId, donorIds));
     }
 
     @PostMapping("donGroup/{groupId}/add/{donorId}")
@@ -81,8 +81,7 @@ public class LEPController {
             @PathVariable int donorId) {
 
         return ResponseEntity.ok(
-                lepService.addDonor(groupId, donorId)
-        );
+                lepService.addDonor(groupId, donorId));
     }
 
     @PostMapping("donGroup/{groupId}/remove/{donorId}")
@@ -91,45 +90,40 @@ public class LEPController {
             @PathVariable int donorId) {
 
         return ResponseEntity.ok(
-                lepService.removeDonor(groupId, donorId)
-        );
+                lepService.removeDonor(groupId, donorId));
     }
 
     @GetMapping("donGroup/matching-donors/{childId}")
     public ResponseEntity<List<DonorEntity>> getMatchingDonors(@PathVariable int childId) {
         return ResponseEntity.ok(
-                lepService.getMatchingDonors(childId)
-        );
+                lepService.getMatchingDonors(childId));
     }
 
     @GetMapping("donGroup/getCurrentDonors/{groupId}")
     public Object getCurrentDonors(@PathVariable int groupId) {
         return ResponseEntity.ok(
-                lepService.getCurrentDonors(groupId)
-        );
+                lepService.getCurrentDonors(groupId));
     }
 
     @GetMapping("donGroup/acceptedRepeat-donors")
     public ResponseEntity<List<DonorEntity>> getAcceptedRepeatDonors() {
         return ResponseEntity.ok(
-                lepService.getAcceptedRepeatDonors()
-        );
+                lepService.getAcceptedRepeatDonors());
     }
 
     @GetMapping("donGroup/acceptedOneTime-donors")
     public ResponseEntity<List<DonorEntity>> getAcceptedOneTimeDonors() {
         return ResponseEntity.ok(
-                lepService.getAcceptedOneTimeDonors()
-        );
+                lepService.getAcceptedOneTimeDonors());
     }
 
     @GetMapping("donGroup/pending-donors")
     public ResponseEntity<List<DonorEntity>> getPendingDonors() {
         return ResponseEntity.ok(
-                lepService.getPendingDonors()
-        );
+                lepService.getPendingDonors());
     }
-    //for testing
+
+    // for testing
     @PostMapping("/{groupId}/rotate-if-due")
     public ResponseEntity<?> rotateIfDue(@PathVariable int groupId) {
 
@@ -146,6 +140,7 @@ public class LEPController {
             @RequestParam int donorId) {
         lepService.sendEmailToDonor(donorId);
     }
+
     @GetMapping("/donors/editable/{lepId}")
     public List<Object> getDonorsEditable(@PathVariable int lepId) {
         return lepService.getDonorsEditable(lepId);
@@ -168,4 +163,20 @@ public class LEPController {
     public void rejectDonor(@PathVariable int donorId, @PathVariable int lepId) {
         lepService.rejectDonor(donorId, lepId);
     }
+
+    @GetMapping("/child/unassigned/{lepId}")
+public ResponseEntity<List<ChildEntity>> getUnassignedChildren(@PathVariable int lepId) {
+    return ResponseEntity.ok(
+            lepService.getUnassignedChildren(lepId)
+    );
+}
+
+@GetMapping("/donGroup/all/{lepId}")
+public ResponseEntity<List<DonorGroupDTO>> getAllGroups(@PathVariable int lepId) {
+    return ResponseEntity.ok(lepService.getAllGroups(lepId));
+}
+@GetMapping("/status")
+public List<volunteerStatus> getDonorStatus() {
+    return Arrays.asList(volunteerStatus.values());
+}
 }

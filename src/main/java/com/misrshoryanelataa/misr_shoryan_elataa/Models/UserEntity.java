@@ -1,4 +1,5 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Models;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -6,10 +7,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+
 import jakarta.validation.constraints.Email;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +24,7 @@ public class UserEntity {
     String phone;
     String name;
     String password;
+
 
     public void setEmail(String email) {
         this.email = email;

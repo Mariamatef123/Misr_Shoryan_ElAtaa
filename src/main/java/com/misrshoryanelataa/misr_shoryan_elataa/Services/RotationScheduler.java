@@ -19,12 +19,14 @@ public class RotationScheduler {
 
 
     @Scheduled(cron = "0 0 0 * * ?") // every day
+    // @Scheduled(cron = "0 * * * * ?")//every min
     public void checkRotation() {
 
         List<DonGroupEntity> groups = groupRepo.findAll();
 
         for (DonGroupEntity group : groups) {
             lepService.rotateIfDue(group);
+            System.out.println(group.getOrderIndex());
         }
     }
 }

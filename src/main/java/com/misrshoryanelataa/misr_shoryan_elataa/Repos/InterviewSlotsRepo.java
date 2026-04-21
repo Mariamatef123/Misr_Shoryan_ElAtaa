@@ -1,4 +1,6 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Repos;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,4 +16,16 @@ public interface InterviewSlotsRepo extends JpaRepository<InterviewSlotEntity, I
 @Transactional
 @Query(value = "UPDATE interview_slot_entity SET volunteer_id = NULL WHERE volunteer_id = :volunteerId", nativeQuery = true)
 void clearVolunteerReference(@Param("volunteerId") int volunteerId);
+@Modifying
+@Query("UPDATE InterviewSlotEntity s SET s.volunteer = null WHERE s.volunteer.hr.id = :hrId")
+void detachSlotsFromHr(@Param("hrId") int hrId);
+    List<InterviewSlotEntity> findByVolunteer_Hr_Id(int staffId);
+
+
+
+
+@Modifying
+@Transactional
+@Query(value = "UPDATE interview_slot_entity SET volunteer_id = NULL WHERE volunteer_id = :volunteerId", nativeQuery = true)
+void detachVolunteerFromSlot(@Param("volunteerId") int volunteerId);
 }

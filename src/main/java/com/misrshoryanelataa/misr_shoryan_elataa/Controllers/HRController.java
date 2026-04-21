@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.misrshoryanelataa.misr_shoryan_elataa.Dtos.InterviewDTO;
+import com.misrshoryanelataa.misr_shoryan_elataa.Dtos.SlotDTO;
+import com.misrshoryanelataa.misr_shoryan_elataa.Dtos.StaffDTO;
 import com.misrshoryanelataa.misr_shoryan_elataa.Enums.Role;
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.InterviewEntity;
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.InterviewSlotEntity;
@@ -49,6 +52,18 @@ public class HRController {
 
         return ResponseEntity.ok(hrService.getAllInterviewSlots());
     }
+    @GetMapping("/interviews/{interviewId}/slots")
+    public ResponseEntity<List<SlotDTO>> getInterviewSlots(
+            @PathVariable int interviewId) {
+        return ResponseEntity.ok(hrService.getInterviewSlots(interviewId));
+    }
+
+@GetMapping("/interviews/{hrId}")
+public ResponseEntity<Object> getAllInterviewsForHR(
+        @PathVariable int hrId) {
+    return ResponseEntity.ok(hrService.getAllInterviewsForHR(hrId));
+}
+
 
     @DeleteMapping("/slots/{hrId}/{slotId}")
     public ResponseEntity<String> deleteInterviewSlot(
@@ -69,11 +84,21 @@ public class HRController {
         return ResponseEntity.ok("Interview slot updated successfully");
     }
 
+@DeleteMapping("/interviews/{hrId}/{interviewId}")
+public ResponseEntity<String> deleteInterview(
+        @PathVariable int hrId,
+        @PathVariable int interviewId) {
 
-
+    hrService.deleteInterview(interviewId, hrId);
+    return ResponseEntity.ok("Interview deleted successfully");
+}
+@GetMapping("/interviews")
+public ResponseEntity<List<InterviewDTO>> getAllInterviews() {
+    return ResponseEntity.ok(hrService.getAllInterviews());
+}
 //staff-----------------
     @GetMapping("/staff")
-    public List<? extends StaffEntity> getStaff(@RequestParam int hrId) {
+    public List<StaffDTO> getStaff(@RequestParam int hrId) {
 
         return hrService.getAllStaff(hrId);
     }
@@ -89,19 +114,15 @@ public class HRController {
                     .body(ex.getMessage());
         }
     }
-       
-    @PutMapping("/staff/{id}")
-    public ResponseEntity<String> updateStaff(@PathVariable int id, @RequestBody StaffEntity staff,@RequestParam int hrId) {
-      
-        try{
-                hrService.updateStaff(id, staff, hrId);
-                return ResponseEntity.ok("Staff updated successfully");
-        } catch (RuntimeException ex) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(ex.getMessage());
-        }
-    }
+@PutMapping("/staff/{id}")
+public ResponseEntity<StaffEntity> updateStaff(
+        @PathVariable int id,
+        @RequestBody StaffEntity staff,
+        @RequestParam int hrId
+) {
+    hrService.updateStaff(id, staff, hrId);
+    return ResponseEntity.ok(staff);
+}
 @PostMapping("/staff/{hrId}")
 public ResponseEntity<String> createStaff(
         @RequestBody StaffEntity staff,
@@ -144,7 +165,7 @@ public String assignVolunteer(@RequestBody Map<String, Integer> data) {
     public void sendEmailToVolunteer(
             @RequestParam int volunteerId,
             @RequestParam int hrId) {
-        hrService.sendEmailToVolunteer(volunteerId, hrId);
+        hrService.sendEmailToVolunteer(volunteerId, hrId,null,null);
     }
 
     @GetMapping("/volunteerAssignedToHr/{hrId}")
@@ -177,4 +198,15 @@ public String assignVolunteer(@RequestBody Map<String, Integer> data) {
         ;
     }
 //----------------------------
+
+@GetMapping("/pending-volunteers")
+public List<VolunteerEntity> getPendingVolunteers(@RequestParam int hrId) {
+    return hrService.getPendingVolunteers(hrId);
+}
+
+@GetMapping("/hr-members")
+public List<StaffDTO> getHrMembers() {
+    return hrService.getHrMembers();
+}
+
 }

@@ -42,20 +42,45 @@ public class DonorService {
         return donorRepo.findByDonorStatus(volunteerStatus.PENDING);
     }
 
-    public Object updateDonor(int id, DonorEntity donor) {
-        try {
-            if (donorRepo.existsById(id)) {
-                donor.setId(id);
-                return donorRepo.save(donor);
-            } else {
-                return "Donor not found";
-            }
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-    }
+public Object updateDonor(int id, DonorEntity newDonorData) {
+    try {
+        DonorEntity existing = donorRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Donor not found"));
 
-    public Object deleteDonor(int id) {
+        // update only allowed fields
+        if (newDonorData.getName() != null)
+            existing.setName(newDonorData.getName());
+
+        if (newDonorData.getEmail() != null)
+            existing.setEmail(newDonorData.getEmail());
+
+        if (newDonorData.getBloodType() != null)
+            existing.setBloodType(newDonorData.getBloodType());
+
+        if (newDonorData.getDonationType() != null)
+            existing.setDonationType(newDonorData.getDonationType());
+
+        if (newDonorData.getDonorstatus() != null)
+            existing.setDonorstatus(newDonorData.getDonorstatus());
+
+        return donorRepo.save(existing);
+
+    } catch (Exception e) {
+        return e.getMessage();
+    }
+}
+
+public Object updateDonorStatus(int id, DonationType type) {
+
+    DonorEntity donor = donorRepo.findById(id)
+            .orElseThrow(() -> new RuntimeException("Donor not found"));
+
+    donor.setDonationType(type);
+
+    return donorRepo.save(donor);
+}
+
+public Object deleteDonor(int id) {
         try {
             if (donorRepo.existsById(id)) {
                 donorRepo.deleteById(id);

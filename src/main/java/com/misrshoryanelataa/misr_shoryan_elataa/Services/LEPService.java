@@ -1,5 +1,8 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Services;
 
+import com.misrshoryanelataa.misr_shoryan_elataa.DTO.ChildDTO;
+import com.misrshoryanelataa.misr_shoryan_elataa.DTO.DonorDTO;
+import com.misrshoryanelataa.misr_shoryan_elataa.DTO.DonorGroupDTO;
 import com.misrshoryanelataa.misr_shoryan_elataa.Enums.DonationType;
 import com.misrshoryanelataa.misr_shoryan_elataa.Enums.volunteerStatus;
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.ChildEntity;
@@ -44,7 +47,7 @@ public class LEPService {
     @Autowired
     private LEPRepo lepRepo;
 
-    public Object createChild(ChildEntity child, int lepId) {
+    public ChildEntity createChild(ChildEntity child, int lepId) {
         LEPEntity lep = lepRepo.findById(lepId)
                 .orElseThrow(() -> new RuntimeException("LEP not found"));
         child.setLep(lep);
@@ -198,37 +201,39 @@ public class LEPService {
 
         return donGroupRepo.save(group);
     }
-    public Object removeDonor(int groupId, int donorId) {
+public Object removeDonor(int groupId, int donorId) {
 
-        DonGroupEntity group = donGroupRepo.findById(groupId)
-                .orElseThrow(() -> new RuntimeException("Group not found"));
+    DonGroupEntity group = donGroupRepo.findById(groupId)
+            .orElseThrow(() -> new RuntimeException("Group not found"));
 
-        if (group.getDonors().size() <= 3) {
-            throw new RuntimeException("Minimum 3 donors required");
-        }
-
-        DonorEntity donor = donorRepo.findById(donorId)
-                .orElseThrow(() -> new RuntimeException("Donor not found"));
-
-        group.getDonors().remove(donor);
-        donor.setGroup(null);
-
-        List<DonorEntity> donors = group.getDonors()
-                .stream()
-                .sorted(Comparator.comparingInt(DonorEntity::getDonationOrder))
-                .toList();
-
-        for (int i = 0; i < donors.size(); i++) {
-            donors.get(i).setDonationOrder(i);
-        }
-
-        return donGroupRepo.save(group);
+    if (group.getDonors().size() <= 3) {
+        throw new RuntimeException("Minimum 3 donors required");
     }
 
+    DonorEntity donor = donorRepo.findById(donorId)
+            .orElseThrow(() -> new RuntimeException("Donor not found"));
+
+    group.getDonors().remove(donor);
+
+    donor.setGroup(null);
+    donorRepo.save(donor);
+
+    List<DonorEntity> donors = group.getDonors()
+            .stream()
+            .sorted(Comparator.comparingInt(DonorEntity::getDonationOrder))
+            .toList();
+
+    for (int i = 0; i < donors.size(); i++) {
+        donors.get(i).setDonationOrder(i);
+    }
+
+    return donGroupRepo.save(group);
+}
     public List<DonorEntity> getMatchingDonors(int childId) {
 
         ChildEntity child = childRepo.findById(childId)
                 .orElseThrow(() -> new RuntimeException("Child not found"));
+                System.out.println("Child blood type: " + child.getBloodType());
 
         return donorService.getAvailableDropDownDonors(child.getBloodType());
     }
@@ -280,7 +285,7 @@ public class LEPService {
             donGroupRepo.save(group);
         }
     }
-    public void sendEmailToDonor(int donorId) {
+ public void sendEmailToDonor(int donorId) {
         DonorEntity donor = donorRepo.findById(donorId)
                 .orElseThrow(() -> new RuntimeException("Donor not found"));
 
@@ -375,7 +380,7 @@ public List<ChildEntity> getUnassignedChildren(int lepId) {
 }
 public List<DonorGroupDTO> getAllGroups(int lepId) {
    List<DonGroupEntity> groups = donGroupRepo.findByLepId(lepId);
-
+    System.out.println("🔎 groups found = " + groups.size());
     return groups.stream().map(g -> {
 
         DonorGroupDTO dto = new DonorGroupDTO();

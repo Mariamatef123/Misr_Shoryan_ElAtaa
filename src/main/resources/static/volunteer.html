@@ -169,6 +169,18 @@
             direction: ltr;
           "
         />
+        <input
+          type="email"
+          id="personalEmail"
+          placeholder="Personal Email"
+          required
+          style="
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            direction: ltr;
+          "
+        />
         <!-- <input
           type="text"
           id="userYear"
@@ -275,7 +287,9 @@
       }
       async function loadSlots() {
         try {
-          const response = await fetch("http://localhost:9090/slots");
+          const response = await fetch(
+            "http://localhost:9090/interviews/8/slots",
+          );
 
           if (!response.ok) {
             throw new Error("Failed to fetch slots");
@@ -300,8 +314,8 @@
             }
 
             div.innerHTML = `
-              <div>${formatDateDMY(slot.slotDate)}</div>
-              <div style="direction:ltr">${convertTo12Hour(slot.slotTime)}</div>
+              <div>${formatDateDMY(slot.date)}</div>
+              <div style="direction:ltr">${convertTo12Hour(slot.time)}</div>
             `;
 
             container.appendChild(div);
@@ -348,6 +362,9 @@
 
         const name = document.getElementById("userName").value.trim();
         const email = document.getElementById("userEmail").value.trim();
+        const personalEmail = document
+          .getElementById("personalEmail")
+          .value.trim();
         const phoneNumber = document.getElementById("phoneNumber").value.trim();
 
         console.log("Email sent:", email);
@@ -366,6 +383,7 @@
                 name: name,
                 universityEmail: email,
                 phone: phoneNumber,
+                email: personalEmail,
               }),
             },
           );
@@ -387,17 +405,18 @@
             );
           }
 
-          console.log("Volunteer created:", createResult);
+          console.log("Volunteer created:", createResult.id);
 
           const chooseResponse = await fetch(
-            `http://localhost:9090/volunteer/${createResult.id}/choose-slot/${selectedSlot.interviewSlotID}`,
+            `http://localhost:9090/volunteer/${createResult.id}/choose-slot/${selectedSlot.id}`,
+
             {
               method: "POST",
             },
           );
 
           if (!chooseResponse.ok) {
-            throw new Error("فشل حجز الموعد");
+            throw new Error("Failed to book interview slot");
           }
 
           showAlert(

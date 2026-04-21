@@ -3,11 +3,15 @@ package com.misrshoryanelataa.misr_shoryan_elataa.Models;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 
 @Entity
+@PrimaryKeyJoinColumn(name = "id")
 public class HREntity extends StaffEntity {
     Boolean isAdmin;
 
@@ -15,11 +19,16 @@ public class HREntity extends StaffEntity {
         this.isAdmin = isAdmin;
     }
 
-    @JsonBackReference
-    @OneToMany(mappedBy = "hr")
-    private List<VolunteerEntity> volunteers;
+@JsonManagedReference("hr-volunteer")
+@OneToMany(mappedBy = "hr",
+           cascade = CascadeType.REMOVE,
+           orphanRemoval = true)
+private List<VolunteerEntity> volunteers;
 
-    @OneToMany(mappedBy = "hr")
+   
+
+    @OneToMany(mappedBy = "hr" ,cascade = CascadeType.ALL,
+           orphanRemoval = true)
     private List<InterviewEntity> interviews;
 
     public Boolean getIsAdmin() {
@@ -34,10 +43,6 @@ public class HREntity extends StaffEntity {
         return interviews;
     }
 
-    public void setVolunteers(VolunteerEntity volunteer) {
-        this.volunteers.add(volunteer);
-    }
-
     public List<VolunteerEntity> getVolunteers() {
         return volunteers;
     }
@@ -45,4 +50,12 @@ public class HREntity extends StaffEntity {
     public HREntity() {
 
     }
+public void setVolunteers(List<VolunteerEntity> volunteers) {
+    this.volunteers = volunteers;
+}
+
+public void addVolunteer(VolunteerEntity volunteer) {
+    volunteers.add(volunteer);
+    volunteer.setHr(this); // 🔥 maintain both sides
+}
 }

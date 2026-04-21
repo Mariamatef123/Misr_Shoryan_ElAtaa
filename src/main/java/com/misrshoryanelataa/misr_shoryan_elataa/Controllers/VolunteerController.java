@@ -40,19 +40,15 @@ public class VolunteerController {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Interview slot not found"));
         
-        return volunteerService.chooseInterviewSlot(slot,volunteerId);
+        return volunteerService.chooseInterviewSlot(slotId,volunteerId);
     }
 
 @PostMapping("/create-volunteer")
-public ResponseEntity<?> createVolunteer(@RequestBody VolunteerEntity volunteer) {
-    try {
+public ResponseEntity<VolunteerEntity> createVolunteer(@RequestBody VolunteerEntity volunteer) {
+  
         VolunteerEntity saved = volunteerService.createVolunteer(volunteer);
         return ResponseEntity.ok(saved);
-    } catch (RuntimeException ex) {
-        return ResponseEntity
-                .badRequest()
-                .body(Map.of("message", ex.getMessage()));
-    }
+   
 }
 }
 

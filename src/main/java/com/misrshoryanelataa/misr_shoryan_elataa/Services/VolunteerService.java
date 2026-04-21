@@ -1,5 +1,8 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Services;
 import com.misrshoryanelataa.misr_shoryan_elataa.Repos.VolunteerRepo;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,26 +36,54 @@ public class VolunteerService {
                 .collect(Collectors.toList());
     }
 
-    public Object chooseInterviewSlot(InterviewSlotEntity slot,int volunteerId) {
-        InterviewSlotEntity interviewSlot = interviewRepo.findAll().stream()
-                .flatMap(interview -> interview.getInterviewSlots().stream())
-                .filter(s -> s.getSlotID() == slot.getSlotID())
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Interview slot not found"));
-            VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
-                .orElseThrow(() -> new RuntimeException("Volunteer not found"));
+    // public Object chooseInterviewSlot(InterviewSlotEntity slot,int volunteerId) {
+    //     InterviewSlotEntity interviewSlot = interviewRepo.findAll().stream()
+    //             .flatMap(interview -> interview.getInterviewSlots().stream())
+    //             .filter(s -> s.getSlotID() == slot.getSlotID())
+    //             .findFirst()
+    //             .orElseThrow(() -> new RuntimeException("Interview slot not found"));
+    //         VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
+    //             .orElseThrow(() -> new RuntimeException("Volunteer not found"));
 
-        if (interviewSlot.getStatus() != InterviewStatus.AVAILABLE) {
-            throw new RuntimeException("Interview slot is not available");
-        }
-        interviewSlot.setStatus(InterviewStatus.UNAVAILABLE);
-        interviewSlot.setVolunteer(volunteer);
-        volunteer.setInterviewSlot(interviewSlot);
-        InterviewEntity interview = new InterviewEntity();
-        volunteerRepo.save(volunteer);
-        interviewRepo.save(interview);
-        return "Interview slot booked successfully";
+    //     if (interviewSlot.getStatus() != InterviewStatus.AVAILABLE) {
+    //         throw new RuntimeException("Interview slot is not available");
+    //     }
+    //     interviewSlot.setStatus(InterviewStatus.UNAVAILABLE);
+    //     interviewSlot.setVolunteer(volunteer);
+    //     volunteer.setInterviewSlot(interviewSlot);
+        
+    //     InterviewEntity interview = new InterviewEntity();
+    //     volunteerRepo.save(volunteer);
+    //     interviewRepo.save(interview);
+    //     return "Interview slot booked successfully";
+    // }
+
+@Transactional
+public Object chooseInterviewSlot(int slotId, int volunteerId) {
+
+    InterviewSlotEntity slot = interviewSlotRepo.findById(slotId)
+            .orElseThrow(() -> new RuntimeException("Interview slot not found"));
+
+    VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
+            .orElseThrow(() -> new RuntimeException("Volunteer not found"));
+
+    if (slot.getStatus() != InterviewStatus.AVAILABLE) {
+        throw new RuntimeException("Slot not available");
     }
+
+    if (volunteer.getInterviewSlot() != null) {
+        throw new RuntimeException("Volunteer already booked a slot");
+    }
+
+    // 🔥 set both sides (IMPORTANT)
+    slot.setStatus(InterviewStatus.UNAVAILABLE);
+    slot.setVolunteer(volunteer); // this will auto-link both sides now
+    volunteer.setInterviewSlot(slot);
+    // 💾 save OWNER ONLY is enough (InterviewSlot owns relation)
+    interviewSlotRepo.save(slot);
+    volunteerRepo.save(volunteer);
+    return "Interview slot booked successfully";
+}
 
 public VolunteerEntity createVolunteer(VolunteerEntity volunteer) {
 
@@ -67,6 +98,7 @@ public VolunteerEntity createVolunteer(VolunteerEntity volunteer) {
     }
 
     volunteer.setAssignedDepartment(null);
+   
 
     
     return volunteerRepo.save(volunteer); 

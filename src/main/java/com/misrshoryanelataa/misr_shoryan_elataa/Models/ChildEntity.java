@@ -84,6 +84,9 @@ public class ChildEntity {
         this.id = id;
     }
 
+    public int getId() {
+        return id;
+    }
     @JsonProperty("groupId")
     public Integer getGroupId() {
         return donorGroup != null ? donorGroup.getId() : null;

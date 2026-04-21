@@ -1,10 +1,17 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Controllers;
 
+import java.util.List;
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.misrshoryanelataa.misr_shoryan_elataa.Dtos.LoginDto;
+import com.misrshoryanelataa.misr_shoryan_elataa.Enums.Role;
+import com.misrshoryanelataa.misr_shoryan_elataa.Models.HREntity;
+import com.misrshoryanelataa.misr_shoryan_elataa.Models.VolunteerEntity;
+import com.misrshoryanelataa.misr_shoryan_elataa.Repos.HrRepo;
 import com.misrshoryanelataa.misr_shoryan_elataa.Security.LoginRateLimiter;
 import com.misrshoryanelataa.misr_shoryan_elataa.Services.StaffService;
 
@@ -20,6 +27,9 @@ public class StaffController {
 
     @Autowired
     private LoginRateLimiter rateLimiter;
+
+    @Autowired
+    private HrRepo hrRepo;
 @PostMapping("/login")
 public ResponseEntity<Object> login(
         @RequestBody LoginDto loginRequest,
@@ -80,5 +90,15 @@ public long getBlockTime(
 }
 
 
+@GetMapping("/hr/staff-departments")
+public List<Role> getStaffDepartments() {
+   
+
+    return Role.values().length
+            > 0 ? List.of(Role.values())
+            .stream()
+            .filter((role) -> Objects.nonNull(role))
+            .toList() : List.of();
+}
 
 }
