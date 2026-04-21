@@ -370,6 +370,43 @@ public class LEPService {
     }}
 
 
+public List<ChildEntity> getUnassignedChildren(int lepId) {
+    return childRepo.findUnassignedChildren(lepId);
+}
+public List<DonorGroupDTO> getAllGroups(int lepId) {
+   List<DonGroupEntity> groups = donGroupRepo.findByLepId(lepId);
+
+    return groups.stream().map(g -> {
+
+        DonorGroupDTO dto = new DonorGroupDTO();
+              ChildEntity c = g.getChild();
+
+        ChildDTO childDTO = new ChildDTO(
+                c.getId(),
+                c.getName(),
+                c.getAge(),
+                c.getBloodType().name(),
+                c.getParentNumber()
+        );
+
+        List<DonorDTO> donors = g.getDonors().stream().map(d -> {
+            DonorDTO dd = new DonorDTO();
+            dd.setId(d.getId());
+            dd.setEmail(d.getEmail());
+            dd.setPhone(d.getPhone());
+            dd.setName(d.getName());
+            dd.setBloodType(d.getBloodType().toString());
+            return dd;
+        }).toList();
+        dto.setId(g.getId());
+        dto.setChild(childDTO);
+        dto.setDonors(donors);
+        dto.setDonorsCount(donors.size());
+
+        return dto;
+    }).toList();
+
+}
 
 }
 
