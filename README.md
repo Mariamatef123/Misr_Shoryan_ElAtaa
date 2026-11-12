@@ -2,17 +2,9 @@
 
 ### Integrated Non-Profit Organization Management System
 
-\<p align="center">
-&#x20; \<strong>A Centralized Platform for Managing Donor Recruitment, Volunteer Operations, Organizational Workflows, and Community Campaigns.\</strong>
-\</p>
 
-\<p align="center">
-&#x20; \<img src="[https://img.shields.io/badge/Java-17-orange?logo=openjdk](https://img.shields.io/badge/Java-17-orange?logo=openjdk)" />
-&#x20; \<img src="[https://img.shields.io/badge/Spring%20Boot-3.5.13-brightgreen?logo=springboot](https://img.shields.io/badge/Spring%20Boot-3.5.13-brightgreen?logo=springboot)" />
-&#x20; \<img src="[https://img.shields.io/badge/Database-SQL%20Server-red?logo=microsoftsqlserver](https://img.shields.io/badge/Database-SQL%20Server-red?logo=microsoftsqlserver)" />
-&#x20; \<img src="[https://img.shields.io/badge/Build-Maven-blue?logo=apachemaven](https://img.shields.io/badge/Build-Maven-blue?logo=apachemaven)" />
-&#x20; \<img src="[https://img.shields.io/badge/Architecture-Layered-purple](https://img.shields.io/badge/Architecture-Layered-purple)" />
-\</p>
+## A Centralized Platform for Managing Donor Recruitment, Volunteer Operations, Organizational Workflows, and Community Campaigns.
+
 
 ---
 
