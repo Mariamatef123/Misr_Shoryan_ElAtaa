@@ -498,7 +498,17 @@ The backend development was collaboratively implemented by:
 **Backend Technologies:** Java 17, Spring Boot, Spring Data JPA, Hibernate, SQL Server, Maven.
 
 ---
+## Frontend Contributors
 
+The frontend development was implemented by:
+
+| Contributor | Role |
+|---|---|
+| **Ellen Osama** | Frontend Developer |
+
+**Frontend Technologies:** HTML5, CSS3, JavaScript.
+
+---
 ## Future Improvements
 
 Potential enhancements based on the project requirements include:
