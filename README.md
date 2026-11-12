@@ -1,6 +1,6 @@
 # Misr Shoryan El-Ataa
 
-### Integrated Non-Profit Organization Management System
+## Digital Platform for Charity Operations Management
 
 
 ## A Centralized Platform for Managing Donor Recruitment, Volunteer Operations, Organizational Workflows, and Community Campaigns.
