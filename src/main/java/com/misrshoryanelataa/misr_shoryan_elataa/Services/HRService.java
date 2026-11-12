@@ -98,7 +98,12 @@ CampaignRepo campaignRepo;
     public List<InterviewSlotEntity> getAllInterviewSlots() {
         return interviewSlotRepo.findAll();
     }
+<<<<<<< HEAD
  @Transactional
+=======
+
+    @Transactional
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
 public void deleteInterviewSlot(int slotId, int hrId) {
             if (!isAdmin(hrId)) {
             throw new RuntimeException("Only admins can delete interview slots");
@@ -108,6 +113,10 @@ public void deleteInterviewSlot(int slotId, int hrId) {
     InterviewSlotEntity slot = interviewSlotRepo.findById(slotId)
             .orElseThrow(() -> new RuntimeException("Slot not found"));
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
     List<VolunteerEntity> volunteers = volunteerRepo.findByInterviewSlot(slot);
 
 
@@ -115,8 +124,15 @@ public void deleteInterviewSlot(int slotId, int hrId) {
         v.setInterviewSlot(null);
     }
 
+<<<<<<< HEAD
     volunteerRepo.saveAll(volunteers); 
     volunteerRepo.flush();
+=======
+    volunteerRepo.saveAll(volunteers);
+    volunteerRepo.flush();
+
+
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
     interviewSlotRepo.delete(slot);
 }
 
@@ -128,17 +144,32 @@ public void updateInterviewSlot(int id, InterviewSlotEntity interviewSlot, int h
 
     InterviewSlotEntity slot = interviewSlotRepo.findById(id)
             .orElseThrow(() -> new RuntimeException("Slot not found"));
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
     if (slot.getVolunteer() != null) {
         VolunteerEntity v = slot.getVolunteer();
         v.setInterviewSlot(null);
         volunteerRepo.save(v);
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
     slot.setSlotDate(interviewSlot.getSlotDate());
     slot.setSlotTime(interviewSlot.getSlotTime());
 
     interviewSlotRepo.save(slot);
 }
 
+<<<<<<< HEAD
+=======
+//------------
+
+    // Staff-----------------
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
 public List<StaffDTO> getAllStaff(int hrId) {
 
     HREntity hr = hrRepo.findById(hrId)
@@ -189,6 +220,10 @@ public void deleteStaff(int staffId, int hrId) {
         HREntity hrToDelete = hrRepo.findById(staffId)
                 .orElseThrow(() -> new RuntimeException("HR entity not found"));
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
         if (hrToDelete.getVolunteers() != null) {
             List<Integer> volunteerIds = hrToDelete.getVolunteers()
                     .stream()
@@ -202,6 +237,10 @@ public void deleteStaff(int staffId, int hrId) {
             }
         }
 
+<<<<<<< HEAD
+=======
+  
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
         if (hrToDelete.getInterview() != null) {
             for (InterviewEntity interview : hrToDelete.getInterview()) {
                 if (interview.getInterviewSlots() != null) {
@@ -213,7 +252,10 @@ public void deleteStaff(int staffId, int hrId) {
             }
         }
 
+<<<<<<< HEAD
         
+=======
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
         hrRepo.deleteById(staffId);
         staffRepo.deleteById(staffId);
         if (volunteerRepo.existsVolunteerRowById(staffId) > 0) {
@@ -226,7 +268,11 @@ public void deleteStaff(int staffId, int hrId) {
     else if (role == Role.LEP) {
         lepRepo.deleteById(staffId);
         staffRepo.deleteById(staffId);
+<<<<<<< HEAD
    
+=======
+ 
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
         if (volunteerRepo.existsVolunteerRowById(staffId) > 0) {
             interviewSlotRepo.detachVolunteerFromSlot(staffId);
             volunteerRepo.deleteVolunteerRowById(staffId);
@@ -237,6 +283,10 @@ public void deleteStaff(int staffId, int hrId) {
     else if (role == Role.PR_ADMIN) {
         prRepo.deleteById(staffId);
         staffRepo.deleteById(staffId);
+<<<<<<< HEAD
+=======
+
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
         if (volunteerRepo.existsVolunteerRowById(staffId) > 0) {
             interviewSlotRepo.detachVolunteerFromSlot(staffId);
             volunteerRepo.deleteVolunteerRowById(staffId);
@@ -245,6 +295,10 @@ public void deleteStaff(int staffId, int hrId) {
     }
 
     else {
+<<<<<<< HEAD
+=======
+
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
         staffRepo.deleteById(staffId);
         if (volunteerRepo.existsVolunteerRowById(staffId) > 0) {
             interviewSlotRepo.detachVolunteerFromSlot(staffId);
@@ -328,6 +382,10 @@ public void updateStaff(int staffId, StaffEntity newData, int hrId) {
 
         staffRepo.save(staff);
     }
+<<<<<<< HEAD
+=======
+//-------------------------
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
 
    public List<Object> getVolunteersEditable(int hrId){
             HREntity hr = hrRepo.findById(hrId)
@@ -349,7 +407,10 @@ public void updateStaff(int staffId, StaffEntity newData, int hrId) {
                     return new ArrayList<>();
                 }
    }
+<<<<<<< HEAD
 
+=======
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
 @Transactional
 public void assignVolunteerToHR(int assignerHrId, int volunteerId, int targetHrId) {
 
@@ -366,15 +427,29 @@ public void assignVolunteerToHR(int assignerHrId, int volunteerId, int targetHrI
     HREntity targetHr = hrRepo.findById(targetHrId)
             .orElseThrow(() -> new RuntimeException("Target HR not found"));
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
     HREntity oldHr = volunteer.getHr();
     if (oldHr != null) {
         oldHr.getVolunteers().remove(volunteer);
     }
 
+<<<<<<< HEAD
     volunteer.setHr(targetHr);
 
     targetHr.getVolunteers().add(volunteer);
 }
+=======
+
+    volunteer.setHr(targetHr);
+
+
+    targetHr.getVolunteers().add(volunteer);
+}
+
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
     public List<VolunteerEntity> getVolunteersAssignedToHR(int hrId) {
         HREntity hr = hrRepo.findById(hrId)
                 .orElseThrow(() -> new RuntimeException("HR not found"));
@@ -415,8 +490,16 @@ public void acceptVolunteer(int volunteerId, int hrId, Role assignedDepartment) 
 
         staffRepo.insertStaffRow(volunteerId, assignedDepartment.name(), generatedEmail);
 
+<<<<<<< HEAD
         userRepo.updatePassword(volunteerId, generatedPassword);
     }
+=======
+
+        userRepo.updatePassword(volunteerId, generatedPassword);
+    }
+
+
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
     if (assignedDepartment == Role.HR_ADMIN || assignedDepartment == Role.HR_MEMBER) {
         hrRepo.insertHrRow(volunteerId, assignedDepartment == Role.HR_ADMIN);
     } else if (assignedDepartment == Role.LEP) {
@@ -467,6 +550,7 @@ public void sendEmailToVolunteer(int volunteerId, int hrId, String generatedEmai
     mailSender.send(message);
 }
 
+<<<<<<< HEAD
     public void chooseDepartmentForVolunteer(int volunteerId, int hrId, Role department) {
         HREntity hr = hrRepo.findById(hrId)
                 .orElseThrow(() -> new RuntimeException("HR not found"));
@@ -483,6 +567,8 @@ public void sendEmailToVolunteer(int volunteerId, int hrId, String generatedEmai
         }
     }
   
+=======
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
     public void rejectVolunteer(int volunteerId, int hrId) {
     HREntity hr = hrRepo.findById(hrId)
             .orElseThrow(() -> new RuntimeException("HR not found"));
@@ -571,12 +657,18 @@ public List<VolunteerEntity> getPendingVolunteers(int hrId) {
             .orElseThrow(() -> new RuntimeException("HR not found"));
 
     Boolean isAdmin = hr.getIsAdmin();
+<<<<<<< HEAD
 
+=======
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
     if (Boolean.TRUE.equals(isAdmin)) {
         return volunteerRepo.findByStatusAndHrIsNull(volunteerStatus.PENDING);
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> b2e049c4bbbab90773a4cf85510aad272934f989
     return volunteerRepo.findByHrIdAndStatus(hrId, volunteerStatus.PENDING);
 }
 
