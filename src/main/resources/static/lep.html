@@ -1025,25 +1025,7 @@ button:active {
                 placeholder="e.g. 01234567890"
               />
             </div>
-            <!-- <div class="form-group">
-              <label class="form-label">Assign to Groups</label>
-              <p
-                style="
-                  font-size: 12px;
-                  color: var(--text3);
-                  margin-bottom: 10px;
-                "
-              >
-                Select groups to assign this child to:
-              </p>
-              <div
-                class="donor-checkbox-list"
-                id="ec-groups-list"
-                style="max-height: 200px"
-              >
-             
-              </div>
-            </div> -->
+     
             <div id="ec-alert" class="alert"></div>
           </div>
           <div class="modal-footer">
@@ -1363,11 +1345,9 @@ button:active {
     </div>
   </div>
      
-        <!-- /content -->
       </main>
     </div>
-    <!-- DONATION LIFECYCLE MODAL -->
-<!-- DONATION LIFECYCLE MODAL -->
+
 <div class="modal-overlay" id="lifecycle-modal">
   <div class="modal" style="width:500px; max-height:85vh; overflow-y:auto;">
     <div class="modal-header">
@@ -1375,9 +1355,6 @@ button:active {
       <button class="modal-close" onclick="closeLifecycleModal()">✕</button>
     </div>
     <div class="modal-body" id="lifecycle-modal-body"></div>
-    <!-- <div class="modal-footer">
-      <button class="btn" onclick="closeLifecycleModal()">Close</button>
-    </div> -->
   </div>
 </div>
     <div id="toast-container"></div>
@@ -2288,28 +2265,7 @@ function deleteDonor(id) {
         closeEditChild();
       }
 
-      // // ─── ACCEPT / REJECT DONOR (Dashboard) ───────────────────
-      // function acceptDonor(btn, name) {
-      //   const row = btn.closest("tr");
-      //   const statusCell = row.querySelector("td:nth-child(4)");
-      //   if (statusCell)
-      //     statusCell.innerHTML =
-      //       '<span class="badge badge-accepted">Accepted</span>';
-      //   btn.closest(".btn-group").innerHTML =
-      //     '<span style="font-size:12px;color:var(--green)">✓ Accepted</span>';
-      //   updatePendingCount(-1);
-      // }
 
-      // function rejectDonor(btn, name) {
-      //   const row = btn.closest("tr");
-      //   row.style.transition = "opacity 0.3s";
-      //   row.style.opacity = "0.4";
-      //   btn.closest(".btn-group").innerHTML =
-      //     '<span style="font-size:12px;color:var(--red)">✕ Rejected</span>';
-      //   updatePendingCount(-1);
-      // }
-
-      // ─── ACCEPT / REJECT DONOR (Donors page list) ─────────────
       function acceptDonorFromList(btn, name) {
         const row = btn.closest("tr");
         row.style.transition = "opacity 0.3s";
@@ -2367,22 +2323,6 @@ function deleteDonor(id) {
         }
       }
 
-      // ─── REMOVE MEMBER ────────────────────────────────────────
-      // function removeMember(btn) {
-      //   const row = btn.closest(".member-row");
-      //   const list = row.closest(".member-list");
-      //   const memberCount = list.querySelectorAll(".member-row").length;
-      //   if (memberCount <= 3) {
-      //     alert("Cannot remove: group must have at least 3 donors.");
-      //     return;
-      //   }
-      //   row.style.transition = "opacity 0.2s";
-      //   row.style.opacity = "0";
-      //   setTimeout(() => {
-      //     row.remove();
-      //     updateGroupFooterCount(list);
-      //   }, 200);
-      // }
 
       function updateGroupFooterCount(memberList) {
         const card = memberList.closest(".group-card2");
@@ -2392,8 +2332,6 @@ function deleteDonor(id) {
           footer.textContent = n + " donor" + (n !== 1 ? "s" : "");
         }
       }
-
-      // ─── ADD DONOR TO GROUP MODAL ─────────────────────────────
 
 
 async function openAddDonorModal(btn, groupId,childId) {
@@ -2413,7 +2351,6 @@ async function openAddDonorModal(btn, groupId,childId) {
       <span class="donor-check-blood">${d.bloodType || d.blood}</span>
     `;
 
-    // ✅ CLICK = ADD DONOR TO GROUP
     item.onclick = async () => {
       try {
         const res = await fetch(
@@ -2507,140 +2444,12 @@ async function openAddDonorModal(btn, groupId,childId) {
         activeGroupCard = null;
       }
 
-      // // ─── CREATE GROUP ─────────────────────────────────────────
-      // function createGroup() {
-      //   const childVal = document.getElementById("cg-child").value;
-      //   const alertEl = document.getElementById("cg-alert");
-      //   const checkedItems = document.querySelectorAll(
-      //     "#cg-donor-list .checked",
-      //   );
-      //   const count = checkedItems.length;
 
-      //   alertEl.className = "alert";
-      //   alertEl.textContent = "";
-
-      //   if (!childVal) {
-      //     alertEl.className = "alert alert-error show";
-      //     alertEl.textContent = "Please select a child first.";
-      //     return;
-      //   }
-      //   if (count < 3) {
-      //     alertEl.className = "alert alert-error show";
-      //     alertEl.textContent = "Select at least 3 donors.";
-      //     return;
-      //   }
-      //   if (count > 6) {
-      //     alertEl.className = "alert alert-error show";
-      //     alertEl.textContent = "Maximum 6 donors allowed.";
-      //     return;
-      //   }
-
-      //   // Get child name from the select
-      //   const childSelect = document.getElementById("cg-child");
-      //   const childName = childSelect.options[
-      //     childSelect.selectedIndex
-      //   ].text.replace(/\s*\(.*\)/, "");
-
-      //   // Count existing groups for this child to name the new group
-      //   const existingGroups = document.querySelectorAll(
-      //     `.group-child-badge[data-child="${childVal}"]`,
-      //   );
-      //   const groupNumber = existingGroups.length + 1;
-
-      //   // Build member rows HTML
-      //   let membersHTML = "";
-      //   checkedItems.forEach((item) => {
-      //     const name = item.dataset.name;
-      //     const blood = item.dataset.blood;
-      //     const initials = item.dataset.initials;
-      //     membersHTML += `
-      //                           <div class="member-row">
-      //                             <div class="member-info">
-      //                               <div class="member-avatar">${initials}</div>
-      //                               <div><div class="member-name">${name}</div><div class="member-blood">${blood}</div></div>
-      //                             </div>
-      //                             <button class="btn btn-danger btn-sm" onclick="removeMember(this)">Remove</button>
-      //                           </div>
-      //                         `;
-      //   });
-
-      //   // Build and append new group card
-      //   const newCard = document.createElement("div");
-      //   newCard.className = "group-card2";
-      //   newCard.innerHTML = `
-      //                         <div class="group-card2-header">
-      //                           <div class="group-card2-title">Group ${groupNumber}</div>
-      //                           <span class="group-child-badge" data-child="${childVal}">${childName}</span>
-      //                         </div>
-      //                         <div class="member-list">${membersHTML}</div>
-      //                         <div class="group-card2-footer">
-      //                           <span class="group-member-count">${count} donors</span>
-      //                           <button class="btn btn-success btn-sm" onclick="openAddDonorModal(this)">+ Add Donor</button>
-      //                         </div>
-      //                       `;
-      //   document.getElementById("group-card-list").appendChild(newCard);
-
-      //   // Update groups metric count
-      //   const mGroups = document.getElementById("m-groups");
-      //   if (mGroups) mGroups.textContent = parseInt(mGroups.textContent) + 1;
-
-      //   alertEl.className = "alert alert-success show";
-      //   alertEl.textContent = `Group ${groupNumber} created for ${childName} with ${count} donors!`;
-
-      //   // Reset form after a short delay
-      //   setTimeout(() => {
-      //     document.getElementById("cg-child").value = "";
-      //     document.querySelectorAll("#cg-donor-list .checked").forEach((el) => {
-      //       el.classList.remove("checked");
-      //       el.querySelector(".check-box").textContent = "";
-      //     });
-      //     document.getElementById("cg-count").textContent = "0";
-      //     alertEl.className = "alert";
-      //   }, 2000);
-      // }
-
-      // // ─── TOGGLE CREATE GROUP DONORS ───────────────────────────
-      // function toggleCGDonor(el) {
-      //   const checked = document.querySelectorAll(
-      //     "#cg-donor-list .checked",
-      //   ).length;
-      //   if (!el.classList.contains("checked") && checked >= 6) return;
-      //   el.classList.toggle("checked");
-      //   el.querySelector(".check-box").textContent = el.classList.contains(
-      //     "checked",
-      //   )
-      //     ? "✓"
-      //     : "";
-      //   document.getElementById("cg-count").textContent =
-      //     document.querySelectorAll("#cg-donor-list .checked").length;
-      // }
-
-      // // ─── CLOSE MODALS ON BACKDROP CLICK ──────────────────────
-      // document
-      //   .getElementById("add-donor-modal")
-      //   .addEventListener("click", function (e) {
-      //     if (e.target === this) closeAddDonorModal();
-      //   });
-      // document
-      //   .getElementById("add-child-modal")
-      //   .addEventListener("click", function (e) {
-      //     if (e.target === this) closeAddChild();
-      //   });
-      // document
-      //   .getElementById("edit-child-modal")
-      //   .addEventListener("click", function (e) {
-      //     if (e.target === this) closeEditChild();
-      //   });
-    
-        // const API_BASE = 'http://localhost:9090'; // change to your server URL
-                      // replace with logged-in LEP id
- 
     const MIN_DONORS = 3;
     const MAX_DONORS = 6;
  
     let selectedDonorIds = new Set();
- 
-    // ── INIT: load children for this LEP ─────────
+
     async function init() {
       const select = document.getElementById('cg-child');
       try {
@@ -2688,7 +2497,6 @@ async function openAddDonorModal(btn, groupId,childId) {
       }
     }
 
-    // ── Render donor checkboxes (your original markup) ─
     function renderDonors(donors) {
       const list = document.getElementById('cg-donor-list');
  
@@ -2722,7 +2530,7 @@ async function openAddDonorModal(btn, groupId,childId) {
       });
     }
  
-    // ── Toggle selection (keeps your original function name) ─
+
 function toggleCGDonor(item) {
   const id = parseInt(item.dataset.id);
 
@@ -2777,14 +2585,7 @@ function toggleCGDonor(item) {
         showAlert('Please select a child first.');
         return;
       }
-      // if (selectedDonorIds.size < MIN_DONORS) {
-      //   showAlert(`Please select at least ${MIN_DONORS} donors.`);
-      //   return;
-      // }
-      // if (selectedDonorIds.size > MAX_DONORS) {
-      //   showAlert(`Please select no more than ${MAX_DONORS} donors.`);
-      //   return;
-      // }
+
  
       try {
         const res = await fetch(`${API_BASE}/donGroup/${childId}`, {

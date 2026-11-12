@@ -10,8 +10,6 @@ public class DashboardDTO {
 
     private int staffCount;
 
-    // getters and setters
-
     public int getTotalVolunteers() {
         return totalVolunteers;
     }

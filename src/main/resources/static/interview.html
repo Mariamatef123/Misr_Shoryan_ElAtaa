@@ -306,7 +306,6 @@
         color: white;
       }
 
-      /* ── Detail Panel ── */
       .detail-panel {
         background: white;
         border-radius: 16px;
@@ -803,11 +802,8 @@
       // ── State ──
       let data = [];
       let selectedId = null;
-      // null  = we are adding a new slot
-      // a value = we are editing that slot (stored as whatever type server returns)
       let editingSlotId = null;
 
-      // ── ID comparison (safe for number vs string) ──
       function sameId(a, b) {
         return a != null && b != null && String(a) === String(b);
       }
@@ -845,7 +841,6 @@
         await getInterviews();
       }
 
-      // POST /interview/{interviewId}/slots  body: { date, time, hrId, interviewId }
       async function apiCreateSlot(interviewId, slotDate, slotTime) {
         const body = { slotDate, slotTime, hrId, interviewId };
         const res = await fetch(
@@ -860,7 +855,6 @@
         await getInterviews();
       }
 
-      // PUT /slots/{hrId}/{slotId}  body: { date, time, hrId, interviewId }
       async function apiUpdateSlot(slotId, slotDate, slotTime) {
         const body = { slotDate, slotTime };
         const res = await fetch(
@@ -875,7 +869,6 @@
         await getInterviews();
       }
 
-      // DELETE /slots/{hrId}/{slotId}
       async function apiDeleteSlot(slotId) {
         const res = await fetch(
           `http://localhost:9090/slots/${hrId}/${slotId}`,
@@ -887,7 +880,6 @@
         await getInterviews();
       }
 
-      // ── Render ──
       function render() {
         renderCards();
         renderDetail();
@@ -1053,11 +1045,8 @@
         }
       }
 
-      // ── Slot Modal ──
-      // slotId is the raw server ID (string or number), or null for a new slot
       function openSlotModal(slotId) {
         setMinDateTomorrow();
-        // Always reset first
         editingSlotId = null;
         document.getElementById("s-date").value = "";
         document.getElementById("s-time").value = "";
@@ -1066,7 +1055,6 @@
         btn.textContent = "Save Slot";
 
         if (slotId !== null && slotId !== undefined && slotId !== "null") {
-          // Editing an existing slot — find it in local data
           const interview = data.find((x) => sameId(x.id, selectedId));
           if (!interview) {
             showToast(" Interview not found");
@@ -1081,7 +1069,6 @@
             return;
           }
 
-          // Store the exact server ID value so we send it back correctly
           editingSlotId = slot.id;
           document.getElementById("s-date").value = slot.date || "";
           document.getElementById("s-time").value = slot.time || "";
@@ -1112,11 +1099,9 @@
 
         try {
           if (editingSlotId !== null) {
-            // UPDATE existing slot
             await apiUpdateSlot(editingSlotId, date, time);
             showToast(" Slot updated");
           } else {
-            // CREATE new slot
             await apiCreateSlot(selectedId, date, time);
             showToast(" Slot added");
           }
@@ -1128,7 +1113,6 @@
         }
       }
 
-      // ── Confirm Delete ──
       function confirmDeleteInterview(id) {
         const interview = data.find((x) => sameId(x.id, id));
         document.getElementById("confirm-title").textContent =

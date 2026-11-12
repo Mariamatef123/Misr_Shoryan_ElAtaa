@@ -20,115 +20,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
-
-// @Entity
-// public class VolunteerEntity extends UserEntity {
-//     @Column(name="UniversityEmail")
-//     String universityEmail;
-
-
-    
-// @JsonBackReference("hr-volunteer")  // ✅ child side
-// @ManyToOne(fetch = FetchType.EAGER)
-// @JoinColumn(name = "hr_id")
-// private HREntity hr;
-
-// // @ManyToOne(fetch = FetchType.EAGER)
-// // @JoinColumn(name = "hr_id")
-// // private HREntity hr;
-
-//     // @JsonBackReference("volunteer")
-//     // // @JsonIgnore
-//     // // @JsonManagedReference("volunteer")
-//     // @OneToOne
-//     // @JoinColumn(name = "interview_slot_id")
-//     // private InterviewSlotEntity interviewSlot;
-
-// //     @OneToOne
-// // @JoinColumn(name = "interview_slot_id")
-// // private InterviewSlotEntity interviewSlot;
-
-// @JsonProperty("interview_slot_date")
-// public LocalDate getInterviewSlotDate() {
-//     return interviewSlot != null ? interviewSlot.getSlotDate() : null;
-// }
-// @OneToOne(mappedBy = "volunteer")
-
-// private InterviewSlotEntity interviewSlot;
-
-// public void setInterviewSlot(InterviewSlotEntity interviewSlot) {
-//     this.interviewSlot = interviewSlot;
-
-//     if (interviewSlot != null && interviewSlot.getVolunteer() != this) {
-//         interviewSlot.setVolunteer(this);
-//     }
-// }
-
-
-// public void setHr(HREntity hr) {
-//     this.hr = hr;
-// }
-// public HREntity getHr() {
-//     return hr;
-// }
-
-//     @Enumerated(EnumType.STRING)
-//     private volunteerStatus status = volunteerStatus.PENDING;
-
-//     @Enumerated(EnumType.STRING)
-//     Role AssignedDepartment;
-
-//     String phoneNumber;
-//     public void setAssignedDepartment(Role assignedDepartment) {
-//         AssignedDepartment = assignedDepartment;
-//     }
-
-//     public Role getAssignedDepartment() {
-//         return AssignedDepartment;
-//     }
-
-//     public void setPhoneNumber(String phoneNumber) {
-//         this.phoneNumber = phoneNumber;
-//     }
-
-//     public void setUniversityEmail(String universityEmail) {
-//         this.universityEmail = universityEmail;
-//     }
-
-//     public String getUniversityEmail() {
-//         return universityEmail;
-//     }
-
-//     public String getPhoneNumber() {
-//         return phoneNumber;
-//     }
-
-
-
-//     // public void setInterviewSlot(InterviewSlotEntity interviewSlot) {
-
-//     //     this.interviewSlot = interviewSlot;
-//     // }
-
-//     public InterviewSlotEntity getInterviewSlot() {
-//         return interviewSlot;
-//     }
-
-//     public void setStatus(volunteerStatus status) {
-//         this.status = status;
-//     }
-
-//     public volunteerStatus getStatus() {
-//         return status;
-//     }
-
-//     public VolunteerEntity() {
-
-//     }
-// }
-
 @Entity
-@Access(AccessType.FIELD) // ✅ IMPORTANT
+@Access(AccessType.FIELD)
 public class VolunteerEntity extends UserEntity {
 
     @Column(name = "university_email")
@@ -138,8 +31,6 @@ public class VolunteerEntity extends UserEntity {
     @JoinColumn(name = "hr_id")
     @JsonBackReference("hr-volunteer")
     private HREntity hr;
-
-    // ✅ FIXED OneToOne mapping
     @OneToOne(mappedBy = "volunteer",cascade = CascadeType.ALL,
           orphanRemoval = true)
     @JsonManagedReference("volunteer-slot")

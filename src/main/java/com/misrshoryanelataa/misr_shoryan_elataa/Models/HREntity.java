@@ -56,6 +56,6 @@ public void setVolunteers(List<VolunteerEntity> volunteers) {
 
 public void addVolunteer(VolunteerEntity volunteer) {
     volunteers.add(volunteer);
-    volunteer.setHr(this); // 🔥 maintain both sides
+    volunteer.setHr(this); 
 }
 }

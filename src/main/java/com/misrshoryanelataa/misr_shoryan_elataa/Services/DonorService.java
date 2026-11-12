@@ -18,6 +18,7 @@ public class DonorService {
     public Object createDonor(DonorEntity donor) {
         return donorRepo.save(donor);
     }
+
     public Object getDonorById(int id) {
         try {
             return donorRepo.findById(id).orElse(null);
@@ -27,7 +28,8 @@ public class DonorService {
     }
 
     public List<DonorEntity> getAvailableDropDownDonors(BloodType bloodType) {
-        return donorRepo.findByBloodTypeAndDonationTypeAndDonorStatusAndGroupIsNull(bloodType, DonationType.REPEAT, volunteerStatus.ACCEPTED);
+        return donorRepo.findByBloodTypeAndDonationTypeAndDonorStatusAndGroupIsNull(bloodType, DonationType.REPEAT,
+                volunteerStatus.ACCEPTED);
     }
 
     public List<DonorEntity> getAcceptedRepeatDonors() {
@@ -46,8 +48,6 @@ public Object updateDonor(int id, DonorEntity newDonorData) {
     try {
         DonorEntity existing = donorRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Donor not found"));
-
-        // update only allowed fields
         if (newDonorData.getName() != null)
             existing.setName(newDonorData.getName());
 
@@ -70,17 +70,17 @@ public Object updateDonor(int id, DonorEntity newDonorData) {
     }
 }
 
-public Object updateDonorStatus(int id, DonationType type) {
+    public Object updateDonorStatus(int id, DonationType type) {
 
-    DonorEntity donor = donorRepo.findById(id)
-            .orElseThrow(() -> new RuntimeException("Donor not found"));
+        DonorEntity donor = donorRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Donor not found"));
 
-    donor.setDonationType(type);
+        donor.setDonationType(type);
 
-    return donorRepo.save(donor);
-}
+        return donorRepo.save(donor);
+    }
 
-public Object deleteDonor(int id) {
+    public Object deleteDonor(int id) {
         try {
             if (donorRepo.existsById(id)) {
                 donorRepo.deleteById(id);
@@ -92,12 +92,13 @@ public Object deleteDonor(int id) {
             return e.getMessage();
         }
     }
+
     public Object getDonorTypes() {
-       return List.of(DonationType.values());
+        return List.of(DonationType.values());
     }
+
     public Object getBloodTypes() {
         return List.of(BloodType.values());
     }
 
-    
 }

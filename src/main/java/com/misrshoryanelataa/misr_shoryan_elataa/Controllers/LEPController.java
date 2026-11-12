@@ -39,11 +39,6 @@ public class LEPController {
     public Object getChildById(@PathVariable int id) {
         return lepService.getChildById(id);
     }
-    // @GetMapping("/child/all")
-    // public List<ChildEntity> getAllChildren() {
-    // return lepService.getAllChildren();
-    // }
-
     @PutMapping("/child/{id}/{lepId}")
     public Object updateChild(@PathVariable int id, @RequestBody ChildEntity child, @PathVariable int lepId) {
         return lepService.updateChild(id, child, lepId);

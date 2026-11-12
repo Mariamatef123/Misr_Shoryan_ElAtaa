@@ -36,27 +36,6 @@ public class VolunteerService {
                 .collect(Collectors.toList());
     }
 
-    // public Object chooseInterviewSlot(InterviewSlotEntity slot,int volunteerId) {
-    //     InterviewSlotEntity interviewSlot = interviewRepo.findAll().stream()
-    //             .flatMap(interview -> interview.getInterviewSlots().stream())
-    //             .filter(s -> s.getSlotID() == slot.getSlotID())
-    //             .findFirst()
-    //             .orElseThrow(() -> new RuntimeException("Interview slot not found"));
-    //         VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
-    //             .orElseThrow(() -> new RuntimeException("Volunteer not found"));
-
-    //     if (interviewSlot.getStatus() != InterviewStatus.AVAILABLE) {
-    //         throw new RuntimeException("Interview slot is not available");
-    //     }
-    //     interviewSlot.setStatus(InterviewStatus.UNAVAILABLE);
-    //     interviewSlot.setVolunteer(volunteer);
-    //     volunteer.setInterviewSlot(interviewSlot);
-        
-    //     InterviewEntity interview = new InterviewEntity();
-    //     volunteerRepo.save(volunteer);
-    //     interviewRepo.save(interview);
-    //     return "Interview slot booked successfully";
-    // }
 
 @Transactional
 public Object chooseInterviewSlot(int slotId, int volunteerId) {
@@ -75,11 +54,9 @@ public Object chooseInterviewSlot(int slotId, int volunteerId) {
         throw new RuntimeException("Volunteer already booked a slot");
     }
 
-    // 🔥 set both sides (IMPORTANT)
     slot.setStatus(InterviewStatus.UNAVAILABLE);
-    slot.setVolunteer(volunteer); // this will auto-link both sides now
+    slot.setVolunteer(volunteer); 
     volunteer.setInterviewSlot(slot);
-    // 💾 save OWNER ONLY is enough (InterviewSlot owns relation)
     interviewSlotRepo.save(slot);
     volunteerRepo.save(volunteer);
     return "Interview slot booked successfully";

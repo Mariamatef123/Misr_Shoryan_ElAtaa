@@ -30,14 +30,5 @@ public interface DonorRepo extends JpaRepository<DonorEntity, Integer> {
 @Transactional
 @Query("UPDATE DonorEntity d SET d.group = null WHERE d.group.id = :groupId")
 void detachByGroup(@Param("groupId") int groupId);
-
-
-// @Modifying
-// @Query("""
-// UPDATE DonorEntity d
-// SET d.group = null, d.staff = null
-// WHERE d.group.id = :id OR d.staff.id = :id
-// """)
-// void detachByGroupOrStaff(@Param("id") int id);
 }
 

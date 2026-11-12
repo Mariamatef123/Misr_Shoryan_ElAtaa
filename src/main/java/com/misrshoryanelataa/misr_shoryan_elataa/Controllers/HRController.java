@@ -96,7 +96,7 @@ public ResponseEntity<String> deleteInterview(
 public ResponseEntity<List<InterviewDTO>> getAllInterviews() {
     return ResponseEntity.ok(hrService.getAllInterviews());
 }
-//staff-----------------
+
     @GetMapping("/staff")
     public List<StaffDTO> getStaff(@RequestParam int hrId) {
 
@@ -139,10 +139,6 @@ public ResponseEntity<String> createStaff(
     }
 }
 
-//-------------------------------
-
-
-//volunteer-----------------
     @GetMapping("/volunteers/{hrId}")
     public List<VolunteerEntity> getAllVolunteers(@PathVariable int hrId) {
         return hrService.getAllVolunteers(hrId);
@@ -197,7 +193,7 @@ public String assignVolunteer(@RequestBody Map<String, Integer> data) {
         hrService.chooseDepartmentForVolunteer(volId, hrId, assignedDepartment);
         ;
     }
-//----------------------------
+
 
 @GetMapping("/pending-volunteers")
 public List<VolunteerEntity> getPendingVolunteers(@RequestParam int hrId) {

@@ -255,7 +255,6 @@
         border-radius: 8px;
       }
 
-      /* STAT CARDS */
       .cards {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -362,7 +361,7 @@
         background: linear-gradient(90deg, var(--accent3), transparent);
       }
 
-      /* BOTTOM GRID */
+
       .bottom-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -597,7 +596,7 @@
     </div>
 
     <div class="main">
-      <!-- PAGE: Dashboard -->
+
       <div class="page active" id="page-dashboard">
         <div class="page-header">
           <div>
@@ -745,7 +744,6 @@
         </div>
       </div>
 
-      <!-- PAGE: Volunteers -->
       <div class="page" id="page-volunteers">
         <div class="page-header">
           <div>
@@ -797,7 +795,6 @@
         .charAt(0)
         .toUpperCase();
 
-      // ── Navigation ──
       const navItems = document.querySelectorAll(".sidebar li[data-page]");
       navItems.forEach((item) => {
         item.addEventListener("click", () => {
@@ -812,7 +809,6 @@
         });
       });
 
-      // ── Date ──
       document.getElementById("today-date").textContent =
         new Date().toLocaleDateString("en-GB", {
           weekday: "short",
@@ -821,7 +817,6 @@
           day: "numeric",
         });
 
-      // ── Count animation ──
       function animateCount(id, target, delay = 0) {
         setTimeout(() => {
           const el = document.getElementById(id);
@@ -836,14 +831,12 @@
         }, delay);
       }
 
-      // ── Status bars ──
       function setBar(id, value, total) {
         const el = document.getElementById(id);
         if (!el || !total) return;
         el.style.width = Math.round((value / total) * 100) + "%";
       }
 
-      // ── Avatar color ──
       const COLORS = [
         "#4f7ef8",
         "#38c98a",
@@ -872,10 +865,9 @@
         interview: "badge-interview",
       };
 
-      // ── Render activity list ──
       function renderActivity(volunteers) {
         const list = document.getElementById("activity-list");
-        // Take last 5, most recent first
+  
         const recent = [...volunteers].reverse().slice(0, 5);
 
         if (!recent.length) {
@@ -915,32 +907,14 @@
             return "Submitted volunteer form";
         }
       }
-
-      // ── Main data fetch ──
       async function loadDashboard() {
         try {
-          // 1. Fetch volunteers  →  GET /pending-volunteers?hrId={hrId}
           const volRes = await fetch(`${BASE}/volunteers/${hrId}`);
           const interviewCreatedRes = await fetch(`${BASE}/interviews`);
           const volunteers = volRes.ok ? await volRes.json() : [];
           const interviewCreated = interviewCreatedRes.ok
             ? await interviewCreatedRes.json()
             : [];
-
-          // const total = volunteers.length;
-          // const approved = volunteers.filter(
-          //   (v) => (v.status || "").toUpperCase() === "APPROVED",
-          // ).length;
-          // const pending = volunteers.filter(
-          //   (v) => (v.status || "").toUpperCase() === "PENDING",
-          // ).length;
-          // const rejected = volunteers.filter(
-          //   (v) => (v.status || "").toUpperCase() === "REJECTED",
-          // ).length;
-          // const interview = volunteers.filter(
-          //   (v) => (v.status || "").toUpperCase() === "INTERVIEW",
-          // ).length;
-          //  single loop
           const counts = volunteers.reduce(
             (acc, v) => {
               const status = (v.status || "").toUpperCase();
@@ -958,24 +932,23 @@
           );
 
           counts.interview = interviewCreated.length;
-          // 👇 use results
+   
           const total = counts.total;
           const approved = counts.approved;
           const pending = counts.pending;
           const rejected = counts.rejected;
           const interview = counts.interview;
-          // Animate stat cards
+
           animateCount("vol-count", total, 100);
           animateCount("appr-count", approved, 200);
 
-          // Animate status panel
           animateCount("s-total", total, 300);
           animateCount("s-approved", approved, 350);
           animateCount("s-pending", pending, 400);
           animateCount("s-rejected", rejected, 450);
           animateCount("s-interview", interview, 500);
 
-          // Bars
+   
           setTimeout(() => {
             setBar("bar-approved", approved, total);
             setBar("bar-pending", pending, total);
@@ -983,10 +956,10 @@
             setBar("bar-interview", interview, total);
           }, 400);
 
-          // Recent activity from volunteer list
+
           renderActivity(volunteers);
 
-          // Trend labels  (pending = "new this week" proxy)
+
           document.getElementById("vol-trend").textContent = `↑ ${pending}`;
           document.getElementById("appr-trend").textContent = `↑ ${approved}`;
         } catch (e) {
@@ -994,7 +967,7 @@
         }
 
         try {
-          // 2. Fetch staff  →  GET /staff?hrId={hrId}
+
           const staffRes = await fetch(`${BASE}/staff?hrId=${hrId}`);
           const staff = staffRes.ok ? await staffRes.json() : [];
 
@@ -1006,7 +979,6 @@
         }
       }
 
-      // ── Init ──
       loadDashboard();
     </script>
   </body>

@@ -23,113 +23,8 @@ import jakarta.persistence.ManyToOne;
 
 import jakarta.persistence.OneToOne;
 
-// @Entity
-// public class InterviewSlotEntity {
-//     @Id
-//     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//     private int slotID;
-    
-//     // @JsonManagedReference
-//     // @OneToOne
-//     // @JoinColumn(name = "volunteer_id", unique = true)
-//     // private VolunteerEntity volunteer;
-// @OneToOne
-// @JoinColumn(name = "volunteer_id", unique = true)
-// private VolunteerEntity volunteer;
-
-// public void setVolunteer(VolunteerEntity volunteer) {
-//     this.volunteer = volunteer;
-
-//     if (volunteer != null && volunteer.getInterviewSlot() != this) {
-//         volunteer.setInterviewSlot(this);
-//     }
-// }
-// // @JsonBackReference
-// // @JsonManagedReference("interview")
-// // @ManyToOne
-// // @JoinColumn(name = "interview_id")
-// // private InterviewEntity interview;
-
-// @JsonBackReference("interview-slot")
-// @ManyToOne
-// @JoinColumn(name = "interview_id")
-// private InterviewEntity interview;
-
-// @JsonProperty("interviewId")
-// public int getInterviewId() {
-//     return interview != null ? interview.getId() : null;
-
-// }
-// @JsonFormat(pattern = "HH:mm")
-// private LocalTime slotTime;
-
-// @JsonFormat(pattern = "yyyy-MM-dd")
-// private LocalDate slotDate;
-
-// @Enumerated(EnumType.STRING)
-// private InterviewStatus status=InterviewStatus.AVAILABLE;
-
-
-//     public void setStatus(InterviewStatus status) {
-//         this.status = status;
-//     }
-
-//     public InterviewStatus getStatus() {
-//         return status;
-//     }
-
-//     public void setSlotID(int slotID) {
-//         this.slotID = slotID;
-//     }
-
-//     public void setSlotDate(LocalDate slotDate) {
-//         this.slotDate = slotDate;
-//     }
-
-//     public void setSlotTime(LocalTime slotTime) {
-//         this.slotTime = slotTime;
-//     }
-
-//     public int getSlotID() {
-//         return slotID;
-//     }
-
-//     public LocalDate getSlotDate() {
-//         return slotDate;
-//     }
-
-//     public LocalTime getSlotTime() {
-//         return slotTime;
-//     }
-
-
-//     public VolunteerEntity getVolunteer() {
-//         return volunteer;
-//     }
-
-//     // public void setInterviewSlotID(int interviewSlotID) {
-//     //     this.slotID = interviewSlotID;
-//     // }
-
-//     // public int getInterviewSlotID() {
-//     //     return slotID;
-//     // }
-
-//     public void setInterview(InterviewEntity interview) {
-//         this.interview = interview;
-//     }
-
-//     public InterviewEntity getInterview() {
-//         return interview;
-//     }
-
-//     public InterviewSlotEntity() {
-//     }
-
-
-// // }
 @Entity
-@Access(AccessType.FIELD) // ✅ VERY IMPORTANT
+@Access(AccessType.FIELD) 
 public class InterviewSlotEntity {
 
     @Id
@@ -139,7 +34,7 @@ public class InterviewSlotEntity {
 
     @OneToOne
     @JoinColumn(name = "volunteer_id", unique = true)
-    @JsonBackReference("volunteer-slot") // ✅ prevent loop
+    @JsonBackReference("volunteer-slot")
     private VolunteerEntity volunteer;
 
     @ManyToOne

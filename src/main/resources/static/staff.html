@@ -1142,37 +1142,6 @@
         await getAllStaff();
         closeModal();
       }
-      // function saveStaff() {
-      //   const fname = document.getElementById("f-fname").value.trim();
-      //   const lname = document.getElementById("f-lname").value.trim();
-      //   const email = document.getElementById("f-email").value.trim();
-      //   const role = document.getElementById("f-role").value;
-      //   // const dept = document.getElementById("f-dept").value;
-      //   // const date = document.getElementById("f-date").value;
-
-      //   if (!fname || !email) {
-      //     alert("Please fill in name and email.");
-      //     return;
-      //   }
-
-      //   const entry = {
-      //     id: editingId || nextId++,
-      //     name: `${fname} ${lname}`.trim(),
-      //     email,
-      //     role,
-      //     // department: dept,
-      //     // officialEmail: date,
-      //   };
-
-      //   if (editingId) {
-      //     staffData = staffData.map((s) => (s.id === editingId ? entry : s));
-      //   } else {
-      //     staffData.push(entry);
-      //   }
-
-      //   closeModal();
-      //   renderTable();
-      // }
 
       // ── Init ──
       document.getElementById("f-date").value = new Date()

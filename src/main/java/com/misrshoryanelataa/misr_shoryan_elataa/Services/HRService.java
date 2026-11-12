@@ -1,6 +1,4 @@
 package com.misrshoryanelataa.misr_shoryan_elataa.Services;
-
-import com.misrshoryanelataa.misr_shoryan_elataa.Dtos.DashboardDTO;
 import com.misrshoryanelataa.misr_shoryan_elataa.Dtos.InterviewDTO;
 import com.misrshoryanelataa.misr_shoryan_elataa.Dtos.SlotDTO;
 import com.misrshoryanelataa.misr_shoryan_elataa.Dtos.StaffDTO;
@@ -9,19 +7,11 @@ import com.misrshoryanelataa.misr_shoryan_elataa.Enums.Role;
 import com.misrshoryanelataa.misr_shoryan_elataa.Enums.volunteerStatus;
 import com.misrshoryanelataa.misr_shoryan_elataa.Models.*;
 import com.misrshoryanelataa.misr_shoryan_elataa.Repos.*;
-
 import org.springframework.transaction.annotation.Transactional;
-
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
-import org.springframework.data.repository.ListCrudRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +65,7 @@ CampaignRepo campaignRepo;
                 .map(hr -> hr.getIsAdmin())
                 .orElse(false);
     }
-    // interview,interview slot-----------------
+  
     public void addInterviewSlot(InterviewSlotEntity interviewSlot, int interviewId) {
 
         InterviewEntity interview = interviewRepo.findById(interviewId)
@@ -108,25 +98,7 @@ CampaignRepo campaignRepo;
     public List<InterviewSlotEntity> getAllInterviewSlots() {
         return interviewSlotRepo.findAll();
     }
-
-    // public void deleteInterviewSlot(int id, int hrId) {
-
-    //     if (!isAdmin(hrId)) {
-    //         throw new RuntimeException("Only admins can delete interview slots");
-    //     }
-
-    //     InterviewSlotEntity slot = interviewSlotRepo.findById(id)
-    //             .orElseThrow(() -> new RuntimeException("Slot not found"));
-
-    //     InterviewEntity interview = slot.getInterview();
-    //     if (interview != null) {
-            
-    //         interview.getInterviewSlots().remove(slot);
-    //         interviewRepo.save(interview);
-    //     }
-    //     interviewSlotRepo.delete(slot);
-    // }
-    @Transactional
+ @Transactional
 public void deleteInterviewSlot(int slotId, int hrId) {
             if (!isAdmin(hrId)) {
             throw new RuntimeException("Only admins can delete interview slots");
@@ -136,18 +108,15 @@ public void deleteInterviewSlot(int slotId, int hrId) {
     InterviewSlotEntity slot = interviewSlotRepo.findById(slotId)
             .orElseThrow(() -> new RuntimeException("Slot not found"));
 
-    // 🔥 Step 1: find volunteers using this slot
     List<VolunteerEntity> volunteers = volunteerRepo.findByInterviewSlot(slot);
 
-    // 🔥 Step 2: unlink them
+
     for (VolunteerEntity v : volunteers) {
         v.setInterviewSlot(null);
     }
 
-    volunteerRepo.saveAll(volunteers); // update FK → null
+    volunteerRepo.saveAll(volunteers); 
     volunteerRepo.flush();
-
-    // 🔥 Step 3: now delete safely
     interviewSlotRepo.delete(slot);
 }
 
@@ -159,52 +128,17 @@ public void updateInterviewSlot(int id, InterviewSlotEntity interviewSlot, int h
 
     InterviewSlotEntity slot = interviewSlotRepo.findById(id)
             .orElseThrow(() -> new RuntimeException("Slot not found"));
-
-    // 🔥 DETACH first (important)
     if (slot.getVolunteer() != null) {
         VolunteerEntity v = slot.getVolunteer();
         v.setInterviewSlot(null);
         volunteerRepo.save(v);
     }
-
-    // update fields
     slot.setSlotDate(interviewSlot.getSlotDate());
     slot.setSlotTime(interviewSlot.getSlotTime());
 
     interviewSlotRepo.save(slot);
 }
 
-//------------
-
-    // Staff-----------------
-// public List<StaffDTO> getAllStaff(int hrId) {
-
-//     HREntity hr = hrRepo.findById(hrId)
-//             .orElseThrow(() -> new RuntimeException("HR not found"));
-
-//     List<StaffEntity> staffList;
-
-//     if (hr.getIsAdmin()) {
-//         staffList = staffRepo.findAll().stream().filter(staff -> staff.getRole() != Role.HR_ADMIN).toList();
-//     } else {
-//         staffList = staffRepo.findAll()
-//                 .stream()
-//                 .filter(staff -> staff.getRole() != Role.HR_ADMIN
-//                         && staff.getRole() != Role.HR_MEMBER)
-//                 .toList();
-//     }
-
-//     return staffList.stream()
-//             .map(s -> new StaffDTO(
-//                     s.getId(),
-//                     s.getName(),
-//                     s.getEmail(),
-//                     s.getRole().name(),
-//                     s.getPhoneNumber(), 
-//                     s.getOfficialEmail()
-//             ))
-//             .toList();
-// }
 public List<StaffDTO> getAllStaff(int hrId) {
 
     HREntity hr = hrRepo.findById(hrId)
@@ -255,7 +189,6 @@ public void deleteStaff(int staffId, int hrId) {
         HREntity hrToDelete = hrRepo.findById(staffId)
                 .orElseThrow(() -> new RuntimeException("HR entity not found"));
 
-        // STEP 1: Handle each volunteer owned by this HR
         if (hrToDelete.getVolunteers() != null) {
             List<Integer> volunteerIds = hrToDelete.getVolunteers()
                     .stream()
@@ -269,7 +202,6 @@ public void deleteStaff(int staffId, int hrId) {
             }
         }
 
-        // STEP 2: Delete interview slots and interviews
         if (hrToDelete.getInterview() != null) {
             for (InterviewEntity interview : hrToDelete.getInterview()) {
                 if (interview.getInterviewSlots() != null) {
@@ -281,8 +213,7 @@ public void deleteStaff(int staffId, int hrId) {
             }
         }
 
-        // STEP 3: Delete HR's own rows
-        // ⚠️ HR was promoted from volunteer — his volunteer_entity row may still exist
+        
         hrRepo.deleteById(staffId);
         staffRepo.deleteById(staffId);
         if (volunteerRepo.existsVolunteerRowById(staffId) > 0) {
@@ -295,7 +226,7 @@ public void deleteStaff(int staffId, int hrId) {
     else if (role == Role.LEP) {
         lepRepo.deleteById(staffId);
         staffRepo.deleteById(staffId);
-        // ⚠️ LEP was promoted from volunteer — check and clean
+   
         if (volunteerRepo.existsVolunteerRowById(staffId) > 0) {
             interviewSlotRepo.detachVolunteerFromSlot(staffId);
             volunteerRepo.deleteVolunteerRowById(staffId);
@@ -306,7 +237,6 @@ public void deleteStaff(int staffId, int hrId) {
     else if (role == Role.PR_ADMIN) {
         prRepo.deleteById(staffId);
         staffRepo.deleteById(staffId);
-        // ⚠️ PR was promoted from volunteer — check and clean
         if (volunteerRepo.existsVolunteerRowById(staffId) > 0) {
             interviewSlotRepo.detachVolunteerFromSlot(staffId);
             volunteerRepo.deleteVolunteerRowById(staffId);
@@ -315,9 +245,7 @@ public void deleteStaff(int staffId, int hrId) {
     }
 
     else {
-        // PR_MEMBER / MEDIA / DECORATION
         staffRepo.deleteById(staffId);
-        // ⚠️ check here too
         if (volunteerRepo.existsVolunteerRowById(staffId) > 0) {
             interviewSlotRepo.detachVolunteerFromSlot(staffId);
             volunteerRepo.deleteVolunteerRowById(staffId);
@@ -400,29 +328,6 @@ public void updateStaff(int staffId, StaffEntity newData, int hrId) {
 
         staffRepo.save(staff);
     }
-//-------------------------
-
-    // public List<VolunteerEntity> getAllVolunteers(int hrId) {
-
-    //     HREntity hr = hrRepo.findById(hrId)
-    //             .orElseThrow(() -> new RuntimeException("HR not found"));
-    //     if(hr.getIsAdmin()){
-    //         return volunteerRepo.findAll();
-    //     }
-    //     else{
-
-    //         return volunteerRepo.findAll()
-    //                 .stream()
-    //                 .filter(volunteer -> volunteer.getHr() != null && volunteer.getHr().getId() == hrId)
-    //                 .collect(Collectors.toList());
-    //     }
-
-    //     // if (!hrRepo.findAll().stream().filter(hr -> hr.getId() == hrId).findFirst().map(hr -> hr.getIsAdmin())
-    //     //         .orElse(false)) {
-    //     //     throw new RuntimeException("Only admins can get volunteers");
-    //     // }
-    //     // return volunteerRepo.findAll();
-    // }
 
    public List<Object> getVolunteersEditable(int hrId){
             HREntity hr = hrRepo.findById(hrId)
@@ -445,27 +350,6 @@ public void updateStaff(int staffId, StaffEntity newData, int hrId) {
                 }
    }
 
-    // public void assignVolunteerToHR(int assignerHrId, int volunteerId, int targetHrId) {
-
-    //     HREntity assigner = hrRepo.findById(assignerHrId)
-    //             .orElseThrow(() -> new RuntimeException("HR not found"));
-
-    //     if (!assigner.getIsAdmin()) {
-    //         throw new RuntimeException("Only admins can assign volunteers");
-    //     }
-
-    //     VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
-    //             .orElseThrow(() -> new RuntimeException("Volunteer not found"));
-
-    //     HREntity targetHr = hrRepo.findById(targetHrId)
-    //             .orElseThrow(() -> new RuntimeException("Target HR not found"));
-
-    //     targetHr.getVolunteers().add(volunteer);
-    //     volunteer.setHr(targetHr);
-
-    //     hrRepo.save(targetHr);
-    //     volunteerRepo.save(volunteer);
-    // }
 @Transactional
 public void assignVolunteerToHR(int assignerHrId, int volunteerId, int targetHrId) {
 
@@ -482,82 +366,15 @@ public void assignVolunteerToHR(int assignerHrId, int volunteerId, int targetHrI
     HREntity targetHr = hrRepo.findById(targetHrId)
             .orElseThrow(() -> new RuntimeException("Target HR not found"));
 
-    // 🔥 clean previous relation (VERY IMPORTANT)
     HREntity oldHr = volunteer.getHr();
     if (oldHr != null) {
         oldHr.getVolunteers().remove(volunteer);
     }
 
-    // 🔥 set new relation (owning side)
     volunteer.setHr(targetHr);
 
-    // optional: keep consistency on inverse side
     targetHr.getVolunteers().add(volunteer);
 }
-    // public void sendEmailToVolunteer(int volunteerId, int hrId) {
-    //     HREntity hr = hrRepo.findById(hrId)
-    //             .orElseThrow(() -> new RuntimeException("HR not found"));
-
-    //     VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
-    //             .orElseThrow(() -> new RuntimeException("Volunteer not found"));
-
-    //     String toEmail = volunteer.getUniversityEmail();
-    //     String subject = "Update on Your Volunteer Application";
-    //     String emailContent;
-    //     Role assignedDepartment = volunteer.getAssignedDepartment();
-
-    //     if (volunteer.getStatus() == volunteerStatus.REJECTED) {
-    //         emailContent = "Dear " + volunteer.getName() +
-    //                 ",\n\nWe regret to inform you that your application has been rejected.";
-
-    //     } else {
-    //         if (assignedDepartment == Role.PR_ADMIN ||
-    //                 assignedDepartment == Role.LEP ||
-    //                 assignedDepartment == Role.HR_ADMIN ||
-    //                 assignedDepartment == Role.HR_MEMBER) {
-
-    //             String cleanName = volunteer.getName().toLowerCase().replaceAll("\\s+", "");
-    //             String generated;
-
-    //             do {
-    //                 generated = cleanName
-    //                         + volunteer.getId()
-    //                         + new Random().nextInt(1000)
-    //                         + "@misrshoryanelataa.com";
-    //             } while (staffRepo.existsByEmail(generated));
-
-    //             String emailGenerated = generated;
-    //             String passwordGenerated = UUID.randomUUID().toString().substring(0, 8);
-    //             StaffEntity staff = new StaffEntity();
-    //             staff.setName(volunteer.getName());
-    //             staff.setEmail(volunteer.getEmail());
-    //             staff.setOfficialEmail(emailGenerated);
-    //             staff.setPassword(passwordGenerated);
-    //             staff.setRole(assignedDepartment);
-    //             staffRepo.save(staff);
-
-    //             emailContent = "Dear " + volunteer.getName() +
-    //                     ",\n\nCongratulations! Your application has been accepted.\n" +
-    //                     "You have been assigned to the " + assignedDepartment + " department.\n\n" +
-    //                     "Your email is: " + emailGenerated + "\n" +
-    //                     "Your password is: " + passwordGenerated + "\n\n" +
-    //                     "Please use these credentials to log in to the volunteer portal.";
-
-    //         } else {
-    //             emailContent = "Dear " + volunteer.getName() +
-    //                     ",\n\nCongratulations! Your application has been accepted.\n" +
-    //                     "You have been assigned to the " + assignedDepartment + " department.\n\n";
-    //         }
-    //     }
-
-    //     SimpleMailMessage message = new SimpleMailMessage();
-    //     message.setTo(toEmail);
-    //     message.setSubject(subject);
-    //     message.setText(emailContent);
-    //     message.setFrom("misrshoryanelataa@gmail.com");
-    //     mailSender.send(message);
-    // }
-   
     public List<VolunteerEntity> getVolunteersAssignedToHR(int hrId) {
         HREntity hr = hrRepo.findById(hrId)
                 .orElseThrow(() -> new RuntimeException("HR not found"));
@@ -575,7 +392,6 @@ public void acceptVolunteer(int volunteerId, int hrId, Role assignedDepartment) 
     VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
             .orElseThrow(() -> new RuntimeException("Volunteer not found"));
 
-    // Update volunteer status
     volunteer.setStatus(volunteerStatus.ACCEPTED);
     volunteer.setAssignedDepartment(assignedDepartment);
     volunteerRepo.save(volunteer);
@@ -589,7 +405,7 @@ public void acceptVolunteer(int volunteerId, int hrId, Role assignedDepartment) 
             || assignedDepartment == Role.LEP;
 
     if (needsCredentials) {
-        // Generate unique official email
+
         String cleanName = volunteer.getName().toLowerCase().replaceAll("\\s+", "");
         do {
             generatedEmail = cleanName + volunteerId + new Random().nextInt(1000) + "@misrshoryanelataa.com";
@@ -597,14 +413,10 @@ public void acceptVolunteer(int volunteerId, int hrId, Role assignedDepartment) 
 
         generatedPassword = UUID.randomUUID().toString().substring(0, 8);
 
-        // Insert into staff_entity only (user_entity row already exists)
         staffRepo.insertStaffRow(volunteerId, assignedDepartment.name(), generatedEmail);
 
-        // Update password in user_entity
         userRepo.updatePassword(volunteerId, generatedPassword);
     }
-
-    // Insert into subclass table only
     if (assignedDepartment == Role.HR_ADMIN || assignedDepartment == Role.HR_MEMBER) {
         hrRepo.insertHrRow(volunteerId, assignedDepartment == Role.HR_ADMIN);
     } else if (assignedDepartment == Role.LEP) {
@@ -655,189 +467,6 @@ public void sendEmailToVolunteer(int volunteerId, int hrId, String generatedEmai
     mailSender.send(message);
 }
 
-// public void rejectVolunteer(int volunteerId, int hrId) {
-
-//     HREntity hr = hrRepo.findById(hrId)
-//             .orElseThrow(() -> new RuntimeException("HR not found"));
-
-//     VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
-//             .orElseThrow(() -> new RuntimeException("Volunteer not found"));
-
-//     volunteer.setStatus(volunteerStatus.REJECTED);
-//     volunteerRepo.save(volunteer);
-
-//     sendEmailToVolunteer(volunteerId, hrId, null, null);
-
-//     if (!hr.getIsAdmin()) {
-//         volunteer.setHr(null);
-//         volunteerRepo.save(volunteer);
-//         hr.getVolunteers().remove(volunteer);
-//         hrRepo.save(hr);
-//         volunteerRepo.delete(volunteer);
-//         userRepo.delete(volunteer);
-//     }
-// }
-// @Transactional
-// public void acceptVolunteer(int volunteerId, int hrId, Role assignedDepartment) {
-
-//     HREntity hr = hrRepo.findById(hrId)
-//             .orElseThrow(() -> new RuntimeException("HR not found"));
-
-//     VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
-//             .orElseThrow(() -> new RuntimeException("Volunteer not found"));
-
-//     // ================= UPDATE VOLUNTEER =================
-//     volunteer.setStatus(volunteerStatus.ACCEPTED);
-//     volunteer.setAssignedDepartment(assignedDepartment);
-//     volunteerRepo.save(volunteer);
-
-//     // ================= GET EXISTING USER DATA =================
-//     UserEntity user = userRepo.findByEmail(volunteer.getEmail())
-//             .orElseThrow(() -> new RuntimeException("User not found"));
-
-//     // ================= HR =================
-//     if (assignedDepartment == Role.HR_ADMIN || assignedDepartment == Role.HR_MEMBER) {
-
-//         if (!hrRepo.existsById(user.getId())) {
-
-//             HREntity newHr = new HREntity();
-
-//             newHr.setId(user.getId()); // ✅ IMPORTANT FIX
-//             newHr.setName(user.getName());
-//             newHr.setEmail(user.getEmail());
-//             newHr.setPhone(user.getPhoneNumber());
-//             newHr.setPassword(user.getPassword());
-
-//             newHr.setIsAdmin(assignedDepartment == Role.HR_ADMIN);
-//             newHr.setRole(assignedDepartment);
-
-//             hrRepo.save(newHr);
-//         }
-//     }
-
-//     // ================= LEP =================
-//     else if (assignedDepartment == Role.LEP) {
-
-//         if (!lepRepo.existsById(user.getId())) {
-
-//             LEPEntity lep = new LEPEntity();
-
-//             lep.setId(user.getId()); // ✅ IMPORTANT FIX
-//             lep.setName(user.getName());
-//             lep.setEmail(user.getEmail());
-//             lep.setPhone(user.getPhoneNumber());
-//             lep.setPassword(user.getPassword());
-
-//             lep.setRole(assignedDepartment);
-
-//             lepRepo.save(lep);
-//         }
-//     }
-
-//     // ================= PR =================
-//     else if (assignedDepartment == Role.PR_ADMIN) {
-
-//         if (!prRepo.existsById(user.getId())) {
-
-//             PREntity pr = new PREntity();
-
-//             pr.setId(user.getId()); // ✅ IMPORTANT FIX
-//             pr.setName(user.getName());
-//             pr.setEmail(user.getEmail());
-//             pr.setPhone(user.getPhoneNumber());
-//             pr.setPassword(user.getPassword());
-
-//             pr.setIsAdmin(true);
-//             pr.setRole(assignedDepartment);
-
-//             prRepo.save(pr);
-//         }
-//     }
-
-//     sendEmailToVolunteer(volunteerId, hrId);
-// }
-  
-
-// public void acceptVolunteer(int volunteerId, int hrId, Role assignedDepartment) {
-    //     HREntity hr = hrRepo.findById(hrId)
-    //             .orElseThrow(() -> new RuntimeException("HR not found"));
-
-    //     VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
-    //             .orElseThrow(() -> new RuntimeException("Volunteer not found"));
-
-    //     volunteer.setStatus(volunteerStatus.ACCEPTED);
-    //     volunteer.setAssignedDepartment(assignedDepartment);
-      
-    //     volunteerRepo.save(volunteer);
-    //       if(assignedDepartment==Role.HR_ADMIN|| assignedDepartment==Role.HR_MEMBER){
-    //         HREntity newHr=new HREntity();
-    //         newHr.setIsAdmin(assignedDepartment==Role.HR_ADMIN);
-    //         // newHr.setId(volunteerId);
-    //         hrRepo.save(newHr);
-
-    //       }
-
-    //     if(assignedDepartment==Role.LEP){
-    //         LEPEntity lep =new LEPEntity();
-    //         // lep.setId(volunteerId);
-    //         LepRepo.save(lep);
-    //     }
-    //     if(assignedDepartment==Role.PR_ADMIN){
-    //         PREntity pr =new PREntity();
-    //         prRepo.save(pr);
-
-    //     }
-    //     sendEmailToVolunteer(volunteerId, hrId);
-    // }
-
-
-    //     public void acceptVolunteer(int volunteerId, int hrId, Role assignedDepartment) {
-//     HREntity hr = hrRepo.findById(hrId)
-//             .orElseThrow(() -> new RuntimeException("HR not found"));
-
-//     VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
-//             .orElseThrow(() -> new RuntimeException("Volunteer not found"));
-
-
-//     volunteer.setStatus(volunteerStatus.ACCEPTED);
-//     volunteer.setAssignedDepartment(assignedDepartment);
-//     volunteerRepo.save(volunteer);
-
-//     if (assignedDepartment == Role.HR_ADMIN || assignedDepartment == Role.HR_MEMBER) {
-//         HREntity newHr = new HREntity();
-//         newHr.setName(volunteer.getName());
-//         newHr.setEmail(volunteer.getEmail());
-//         newHr.setPhone(volunteer.getPhoneNumber());
-//         newHr.setPassword(volunteer.getPassword());
-//         newHr.setIsAdmin(assignedDepartment == Role.HR_ADMIN);
-//         newHr.setRole(assignedDepartment);
-//         hrRepo.save(newHr);
-//     }
-
-//     if (assignedDepartment == Role.LEP) {
-//         LEPEntity lep = new LEPEntity();
-//         lep.setName(volunteer.getName());
-//         lep.setEmail(volunteer.getEmail());
-//         lep.setPhone(volunteer.getPhoneNumber());
-//         lep.setPassword(volunteer.getPassword());
-//         lep.setRole(assignedDepartment);
-//         LepRepo.save(lep);
-//     }
-
-//     if (assignedDepartment == Role.PR_ADMIN) {
-//         PREntity pr = new PREntity();
-//         pr.setName(volunteer.getName());
-//         pr.setEmail(volunteer.getEmail());
-//         pr.setPhone(volunteer.getPhoneNumber());
-//         pr.setPassword(volunteer.getPassword());
-//         pr.setIsAdmin(true);
-//         pr.setRole(assignedDepartment);
-//         prRepo.save(pr);
-//     }
-
-//     sendEmailToVolunteer(volunteerId, hrId);
-// }
-
     public void chooseDepartmentForVolunteer(int volunteerId, int hrId, Role department) {
         HREntity hr = hrRepo.findById(hrId)
                 .orElseThrow(() -> new RuntimeException("HR not found"));
@@ -853,25 +482,7 @@ public void sendEmailToVolunteer(int volunteerId, int hrId, String generatedEmai
             volunteerRepo.save(volunteer);
         }
     }
-    // public void rejectVolunteer(int volunteerId, int hrId) {
-    //     HREntity hr = hrRepo.findById(hrId)
-    //             .orElseThrow(() -> new RuntimeException("HR not found"));
-
-    //     VolunteerEntity volunteer = volunteerRepo.findById(volunteerId)
-    //             .orElseThrow(() -> new RuntimeException("Volunteer not found"));
-
-    //     volunteer.setStatus(volunteerStatus.REJECTED);
-    //     volunteerRepo.save(volunteer);
-      
-    //     if (!hr.getIsAdmin()) {
-    //         // sendEmailToVolunteer(volunteerId, hrId);
-    //         // interviewSlotRepo.clearVolunteerReference(volunteerId);
-            
-    //         volunteerRepo.deleteByHrId(volunteerId);
-    //         volunteerRepo.delete(volunteer);
-    //           userRepo.delete(volunteer);
-    //     }
-    // }
+  
     public void rejectVolunteer(int volunteerId, int hrId) {
     HREntity hr = hrRepo.findById(hrId)
             .orElseThrow(() -> new RuntimeException("HR not found"));
@@ -883,16 +494,15 @@ public void sendEmailToVolunteer(int volunteerId, int hrId, String generatedEmai
     volunteerRepo.save(volunteer);
 sendEmailToVolunteer( volunteerId, hrId, null,null);
     if (!hr.getIsAdmin()) {
-        // Detach from HR before deleting
+
         volunteer.setHr(null);
         volunteerRepo.save(volunteer);
 
-        // Remove from HR's list
         hr.getVolunteers().remove(volunteer);
         hrRepo.save(hr);
 
         volunteerRepo.delete(volunteer);
-        userRepo.delete(volunteer); // only if UserEntity has its own table
+        userRepo.delete(volunteer); 
     }
 }
 
@@ -953,19 +563,7 @@ sendEmailToVolunteer( volunteerId, hrId, null,null);
                 })
                 .collect(Collectors.toList());
     }
-// getPendingVolunteers
-// public List<VolunteerEntity> getPendingVolunteers(int hrId) {
-//     HREntity hr = hrRepo.findById(hrId)
-//             .orElseThrow(() -> new RuntimeException("HR not found"));
 
-//     if (hr.getIsAdmin()) {
-//         return volunteerRepo.findPendingWithNoHR(volunteerStatus.PENDING); // ✅ no findAll()
-//     }
-
-//     return hr.getVolunteers().stream()
-//             .filter(v -> v.getStatus() == volunteerStatus.PENDING)
-//             .collect(Collectors.toList());
-// }
 @Transactional(readOnly = true)
 public List<VolunteerEntity> getPendingVolunteers(int hrId) {
 
@@ -974,33 +572,21 @@ public List<VolunteerEntity> getPendingVolunteers(int hrId) {
 
     Boolean isAdmin = hr.getIsAdmin();
 
-    // ✅ ADMIN: fetch directly from DB (best practice)
     if (Boolean.TRUE.equals(isAdmin)) {
         return volunteerRepo.findByStatusAndHrIsNull(volunteerStatus.PENDING);
     }
 
-    // ✅ NON-ADMIN: also fetch from DB (NOT from entity list)
+
     return volunteerRepo.findByHrIdAndStatus(hrId, volunteerStatus.PENDING);
 }
 
-// getAllVolunteers
-// public List<VolunteerEntity> getAllVolunteers(int hrId) {
-//     HREntity hr = hrRepo.findById(hrId)
-//             .orElseThrow(() -> new RuntimeException("HR not found"));
-
-//     if (hr.getIsAdmin()) {
-//         return volunteerRepo.findAll(); // ✅ safe
-//     }
-
-//     return hr.getVolunteers(); // ✅ correct
-// }
 @Transactional
 public List<VolunteerEntity> getAllVolunteers(int hrId) {
     HREntity hr = hrRepo.findById(hrId)
             .orElseThrow(() -> new RuntimeException("HR not found"));
 
     if (Boolean.TRUE.equals(hr.getIsAdmin())) {
-        return volunteerRepo.findAllVolunteers(); // safe query, not findAll()
+        return volunteerRepo.findAllVolunteers(); 
     }
 
     List<VolunteerEntity> volunteers = hr.getVolunteers();
@@ -1043,48 +629,5 @@ public List<StaffDTO> getHrMembers() {
                 .collect(Collectors.toList());
     }
 
-    // public DashboardDTO buildDashboard(int hrId) {
-
-
-
-
-    //     List<VolunteerEntity> volunteers = volunteerRepo.findByHrId(hrId);
-
-    //     DashboardDTO dto = new DashboardDTO();
-
-    //     dto.setTotalVolunteers(volunteers.size());
-
-    //     dto.setApproved(
-    //             (int) volunteers.stream()
-    //                     .filter(v -> v.getStatus().name().equals("APPROVED"))
-    //                     .count()
-    //     );
-
-    //     dto.setPending(
-    //             (int) volunteers.stream()
-    //                     .filter(v -> v.getStatus().name().equals("PENDING"))
-    //                     .count()
-    //     );
-
-    //     dto.setRejected(
-    //             (int) volunteers.stream()
-    //                     .filter(v -> v.getStatus().name().equals("REJECTED"))
-    //                     .count()
-    //     );
-
-    //     dto.setInterview(
-    //             (int) volunteers.stream()
-    //                     .filter(v -> v.getStatus().name().equals("INTERVIEW"))
-    //                     .count()
-    //     );
-
-    //     dto.setStaffCount(
-    //             staffRepo.findByHrId(hrId).size()
-    //     );
-
-    //     return dto;
-    
-
-    // }
 
 }

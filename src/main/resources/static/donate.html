@@ -164,9 +164,9 @@
     </nav>
 
     <div class="content-box">
-      <!-- novalidate prevents browser native validation on dynamic inputs -->
+     
       <form id="donateForm" novalidate>
-        <!-- STEP 1 -->
+
         <div id="step1">
           <h3>بيانات المتبرع (1/3)</h3>
 
@@ -198,7 +198,6 @@
           </button>
         </div>
 
-        <!-- STEP 2 -->
         <div id="step2" class="hidden">
           <h3>البيانات الصحية (2/3)</h3>
 
@@ -213,7 +212,7 @@
           </button>
         </div>
 
-        <!-- STEP 3 -->
+
         <div id="step3" class="hidden" style="text-align: center">
           <h3>تم القبول.. اختر الموعد (3/3)</h3>
 
@@ -234,7 +233,7 @@
       </form>
     </div>
 
-    <!-- Alert Modal -->
+
     <div class="alert-overlay" id="alertOverlay">
       <div class="alert-box">
         <div class="alert-icon" id="alertIcon"></div>
@@ -249,19 +248,13 @@
       tomorrow.setDate(tomorrow.getDate() + 1);
       const minDate = tomorrow.toISOString().split("T")[0]; // "2026-04-15"
       document.getElementById("appointmentDate").min = minDate;
-      /* =========================
-         STEP NAVIGATION
-      ========================= */
+
       function goToStep(stepNumber) {
         document.getElementById("step1").classList.add("hidden");
         document.getElementById("step2").classList.add("hidden");
         document.getElementById("step3").classList.add("hidden");
         document.getElementById("step" + stepNumber).classList.remove("hidden");
       }
-
-      /* =========================
-         STEP 1 VALIDATION
-      ========================= */
       function validateStep1() {
         const name = document.getElementById("name").value.trim();
         const city = document.getElementById("city").value.trim();
@@ -307,9 +300,6 @@
         goToStep(2);
       }
 
-      /* =========================
-         FINAL SUBMIT (STEP 3)
-      ========================= */
       function finalSubmit() {
         const date = document.getElementById("appointmentDate").value;
         if (!date) {
@@ -327,9 +317,6 @@
         createDonor();
       }
 
-      /* =========================
-         CREATE DONOR API CALL
-      ========================= */
       async function createDonor() {
         const donorData = {
           name: document.getElementById("name").value,
@@ -359,7 +346,7 @@
             () => {
               window.location.href = "index.html";
             },
-            true, // redirect on close
+            true, 
           );
         } catch (error) {
           console.error("Error creating donor:", error);
@@ -374,9 +361,7 @@
         }
       }
 
-      /* =========================
-         LOAD SELECT OPTIONS
-      ========================= */
+  
       async function loadSelectOptions() {
         try {
           const [bloodRes, donorRes] = await Promise.all([
@@ -407,15 +392,10 @@
         }
       }
 
-      /* =========================
-         QUESTIONS STATE
-      ========================= */
+
       let allQuestions = [];
       let answers = {};
 
-      /* =========================
-         LOAD QUESTIONS
-      ========================= */
       async function loadQuestions() {
         try {
           const res = await fetch("http://localhost:9090/questions");
@@ -426,9 +406,7 @@
         }
       }
 
-      /* =========================
-         SHOULD SHOW (dependency logic)
-      ========================= */
+
       function shouldShow(q) {
         if (!q.dependsOnQuestionId) return true;
         const parentAnswer = answers[q.dependsOnQuestionId];
@@ -436,9 +414,7 @@
         return parentAnswer === "Yes";
       }
 
-      /* =========================
-         RENDER QUESTIONS
-      ========================= */
+
       function renderQuestions() {
         const container = document.getElementById("dynamic-questions");
         container.innerHTML = "";
@@ -447,8 +423,6 @@
           if (!shouldShow(q)) return;
 
           let html = "";
-
-          /* YES / NO */
           if (q.type === "YES_NO") {
             const current = answers[q.id];
             html = `
@@ -479,8 +453,6 @@
               </div>
             `;
           }
-
-          /* NUMBER */
           if (q.type === "NUMBER") {
             const current = answers[q.id] || "";
             html = `
@@ -504,17 +476,12 @@
         });
       }
 
-      /* =========================
-         HANDLE ANSWER
-      ========================= */
       function handleAnswer(id, value) {
         answers[id] = value;
         renderQuestions();
       }
 
-      /* =========================
-         SUBMIT MEDICAL (STEP 2)
-      ========================= */
+
       function submitMedical() {
         fetch("http://localhost:9090/validate", {
           method: "POST",
@@ -532,7 +499,7 @@
                 data.message,
                 "شكراً لمحاولتك لإنقاذ حياة الآخرين",
                 null,
-                true, // redirect to index after closing
+                true,
               );
             }
           })
@@ -549,11 +516,6 @@
           });
       }
 
-      /* =========================
-         ALERT SYSTEM
-         redirectOnClose: true  → go to index.html after closing
-         redirectOnClose: false → just close the alert, stay on page
-      ========================= */
       let alertCallback = null;
       let alertShouldRedirect = false;
 
@@ -580,9 +542,7 @@
         document.getElementById("alertOverlay").classList.add("show");
       }
 
-      /* =========================
-         CLOSE ALERT
-      ========================= */
+
       function closeAlert() {
         document.getElementById("alertOverlay").classList.remove("show");
 
@@ -597,9 +557,6 @@
         }
       }
 
-      /* =========================
-         INIT
-      ========================= */
       loadSelectOptions();
       loadQuestions();
     </script>

@@ -32,17 +32,6 @@ public class DonorController {
         return donorService.getDonorById(id);
     }
 
-//    @GetMapping("/donor/blood-type/{bloodType}")
-//    public List<DonorEntity> getDonorsByBloodType(@PathVariable BloodType bloodType) {
-//
-//        List<DonorEntity> donors = donorService.findByBloodTypeAndStateAndGroupIsNull(bloodType, DonationType.REPEAT);
-//
-//        if (donors.isEmpty()) {
-//            throw new RuntimeException("No donors found");
-//        }
-//
-//        return donors;
-//    }
 
     @PutMapping("/donor/{id}")
     public Object updateDonor(@PathVariable int id, @RequestBody DonorEntity donor) {

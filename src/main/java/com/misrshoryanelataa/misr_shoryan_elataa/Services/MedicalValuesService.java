@@ -31,10 +31,10 @@ public class MedicalValuesService {
     StringBuilder sb = new StringBuilder();
     for (char c : input.toCharArray()) {
         if (c >= '\u0660' && c <= '\u0669') {
-            // Arabic-Indic digits ٠١٢٣٤٥٦٧٨٩
+            
             sb.append((char) (c - '\u0660' + '0'));
         } else if (c >= '\u06F0' && c <= '\u06F9') {
-            // Extended Persian digits ۰۱۲۳۴۵۶۷۸۹
+
             sb.append((char) (c - '\u06F0' + '0'));
         } else {
             sb.append(c);

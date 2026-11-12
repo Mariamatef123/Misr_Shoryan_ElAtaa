@@ -61,9 +61,7 @@ public class LEPService {
             return e.getMessage();
         }
     }
-//    public List<ChildEntity> getAllChildren() {
-//        return childRepo.findAll();
-//    }
+
     public Object updateChild(int id, ChildEntity child, int lepId) {
         try {
             if (childRepo.existsById(id)) {
@@ -86,7 +84,6 @@ public class LEPService {
 
         DonGroupEntity group = child.getDonorGroup();
         if (group != null) {
-            // break relations first
             for (DonorEntity donor : group.getDonors()) {
                 donor.setGroup(null);
             }
@@ -101,7 +98,6 @@ public class LEPService {
         return childRepo.findByLepId(lepId);
     }
 
-    ///////DONORGROUP///////
     public Object createGroup(int childId, List<Integer> donorIds) {
 
         ChildEntity child = childRepo.findById(childId)
@@ -252,7 +248,7 @@ public Object removeDonor(int groupId, int donorId) {
 
         List<DonorEntity> result = new ArrayList<>();
 
-        result.add(donors.get(index)); // main
+        result.add(donors.get(index));
 
         int backupIndex = index + 3;
         if (backupIndex < donors.size()) {
