@@ -509,24 +509,6 @@ The frontend development was implemented by:
 **Frontend Technologies:** HTML5, CSS3, JavaScript.
 
 ---
-## Future Improvements
-
-Potential enhancements based on the project requirements include:
-
-- Spring Security integration with JWT authentication and authorization.
-- Role-based access control across all departments.
-- Distributed rate limiting using Redis.
-- Enhanced medical screening workflows.
-- Automated donation-cycle reminders.
-- Emergency donor notification workflows.
-- Campaign constraint validation and team notifications.
-- Centralized exception handling and structured logging.
-- Comprehensive unit and integration testing.
-- API documentation using OpenAPI / Swagger.
-- Audit logging and monitoring.
-- Docker-based deployment.
-
----
 
 ## Repository
 
