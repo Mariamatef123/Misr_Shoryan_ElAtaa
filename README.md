@@ -1,6 +1,6 @@
 # Misr Shoryan El-Ataa
 
-### Integrated Charity Organization Management System
+### Digital Platform for Charity Operations Management
 
 **A Centralized Digital Platform for Managing Donor Recruitment, Medical Screening Workflows, Volunteer Operations, and Charity Campaigns.**
 
